@@ -15,6 +15,7 @@ enum class EMovementType : uint8;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetAnimSet, const FName&, Animset);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetMovementType, EMovementType, NewMovementType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetSprinting, bool, NewSprinting);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetRotationMode, ERotationMode, NewRotationMode);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class HORRORZONE_API ULocomotionSystem : public UActorComponent
@@ -28,6 +29,7 @@ public:
 	FORCEINLINE FOnSetAnimSet& GetOnSetAnimSet() { return OnSetAnimSetDelegate; }
 	FORCEINLINE FOnSetMovementType& GetOnSetMovementType() { return OnSetMovementTypeDelegate; }
 	FORCEINLINE FOnSetSprinting& GetOnSetSprinting() { return OnSetSprintingDelegate; }
+	FORCEINLINE FOnSetRotationMode& GetOnSetRotationMode() { return OnSetRotationModeDelegate; }
 	FORCEINLINE EMovementType GetMovementType() const { return MovementType; }
 	FORCEINLINE FRotator GetBaseAimRotation() const { return BaseAimRotation; }
 	FORCEINLINE bool GetHasAcceleration() const { return HasAcceleration; }
@@ -87,6 +89,8 @@ protected:
 	FOnSetMovementType OnSetMovementTypeDelegate;
 
 	FOnSetSprinting OnSetSprintingDelegate;
+
+	FOnSetRotationMode OnSetRotationModeDelegate;
 
 	UPROPERTY(Transient)
 	ACharacter* OwnerActor;

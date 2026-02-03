@@ -55,7 +55,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoUncrouch();
-
 	
 protected:
 	/** Move Input Action */
@@ -77,6 +76,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* JumpAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* SwitchRotationAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
@@ -108,4 +110,6 @@ protected:
 	void DJump(const FInputActionValue& Value);
 
 	void UJump(const FInputActionValue& Value);
+
+	void SwitchRotation(const FInputActionValue& Value);
 };

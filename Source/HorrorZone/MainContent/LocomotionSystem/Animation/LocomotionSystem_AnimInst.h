@@ -8,6 +8,7 @@
 #include "MainContent/LocomotionSystem/Data/Locomotion_Structs.h"
 #include "LocomotionSystem_AnimInst.generated.h"
 
+enum class ERotationMode : uint8;
 enum class EMovementType : uint8;
 struct FAnimNodeReference;
 struct FAnimUpdateContext;
@@ -72,6 +73,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Locomotion System")
 	FS_Animset Animset;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character State Data")
+	ERotationMode RotationMode;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Sequences")
 	UAnimSequence* IdleAnimation;
 
@@ -390,6 +394,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character State Data")
 	bool InWall;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character State Data")
+	bool RotationModeChanged = false;
 	
 private:
 	/**
@@ -403,6 +409,9 @@ private:
 
 	UFUNCTION()
 	void OnSetSprint(bool bSprint);
+
+	UFUNCTION()
+	void OnSetRotationMode(ERotationMode NewRotation);
 	
 	UFUNCTION(BlueprintPure, BlueprintCallable, Category = "Idle Breaks", meta = (BlueprintThreadSafe))
 	bool CanPlayIdleBreaks() const;

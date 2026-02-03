@@ -78,6 +78,7 @@ void ULocomotionSystem_AnimInst::Initialization()
 		LocomotionSystem->GetOnSetAnimSet().AddDynamic(this, &ULocomotionSystem_AnimInst::OnSetAnimSet);
 		LocomotionSystem->GetOnSetMovementType().AddDynamic(this, &ULocomotionSystem_AnimInst::OnSetMovementType);
 		LocomotionSystem->GetOnSetSprinting().AddDynamic(this, &ULocomotionSystem_AnimInst::OnSetSprint);
+		LocomotionSystem->GetOnSetRotationMode().AddDynamic(this, &ULocomotionSystem_AnimInst::OnSetRotationMode);
 		// Set initial state - this should be false on initialization
 		HasAcceleration = false;
 	}
@@ -125,6 +126,22 @@ void ULocomotionSystem_AnimInst::OnSetSprint(bool bSprint)
 	IsSprinting = bSprint;
 	SetAnimationData();
 }
+
+void ULocomotionSystem_AnimInst::OnSetRotationMode(ERotationMode NewRotation)
+{
+	if (NewRotation != RotationMode)
+	{
+		RotationMode = NewRotation;
+		SetAnimationData();
+		RotationModeChanged = true;
+		FTimerHandle L_TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(L_TimerHandle, [this]()
+		{
+			RotationModeChanged = false;
+		}, 0.1f, false);
+	}
+}
+
 
 void ULocomotionSystem_AnimInst::SetAnimationData()
 {

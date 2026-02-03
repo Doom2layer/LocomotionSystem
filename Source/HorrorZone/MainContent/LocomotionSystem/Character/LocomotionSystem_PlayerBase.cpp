@@ -55,10 +55,8 @@ void ALocomotionSystem_PlayerBase::SetupPlayerInputComponent(UInputComponent* Pl
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
-		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ALocomotionSystem_PlayerBase::Move);
 
-		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ALocomotionSystem_PlayerBase::Look);
 
 		EnhancedInputComponent->BindAction(WalkAction, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::Walk);
@@ -76,7 +74,8 @@ void ALocomotionSystem_PlayerBase::SetupPlayerInputComponent(UInputComponent* Pl
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::DJump);
 
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ALocomotionSystem_PlayerBase::UJump);
-		
+
+		EnhancedInputComponent->BindAction(SwitchRotationAction, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::SwitchRotation);
 	}
 	else
 	{
@@ -140,6 +139,11 @@ void ALocomotionSystem_PlayerBase::DJump(const FInputActionValue& Value)
 void ALocomotionSystem_PlayerBase::UJump(const FInputActionValue& Value)
 {
 	ToggleJump(false);
+}
+
+void ALocomotionSystem_PlayerBase::SwitchRotation(const FInputActionValue& Value)
+{
+	SwitchRotationMode(true);
 }
 
 void ALocomotionSystem_PlayerBase::DoMove(float Right, float Forward)

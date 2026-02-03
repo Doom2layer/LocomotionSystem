@@ -35,6 +35,8 @@ protected:
 
 	virtual void ToggleJump(bool IsPressed);
 
+	virtual void SwitchRotationMode(bool IsPressed);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	ULocomotionSystem* LocomotionSystem;
 };

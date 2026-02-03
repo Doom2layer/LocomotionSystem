@@ -84,3 +84,15 @@ void ALocomotionSystem_CharacterBase::ToggleJump(bool IsPressed)
 		StopJumping();
 	}
 }
+
+void ALocomotionSystem_CharacterBase::SwitchRotationMode(bool IsPressed)
+{
+	if (!LocomotionSystem) return;
+
+	if (IsPressed)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Switch Rotation"));
+		ERotationMode NewMode = LocomotionSystem->GetRotationMode() == ERotationMode::ForwardFacing ? ERotationMode::Strafing : ERotationMode::ForwardFacing;
+		LocomotionSystem->SetRotationMode(NewMode);
+	}
+}

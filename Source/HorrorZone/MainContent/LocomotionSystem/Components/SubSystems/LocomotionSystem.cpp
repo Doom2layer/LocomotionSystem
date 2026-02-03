@@ -171,4 +171,5 @@ void ULocomotionSystem::SetRotationMode(ERotationMode NewRotationMode)
 void ULocomotionSystem::SetRotationRate(const FRotator& NewRotationRate)
 {
 	MovementComponent->RotationRate = NewRotationRate;
+	OnSetRotationModeDelegate.Broadcast(RotationMode);
 }
