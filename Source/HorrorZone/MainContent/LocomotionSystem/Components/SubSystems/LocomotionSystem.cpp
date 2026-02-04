@@ -2,6 +2,8 @@
 
 
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
+
+#include "KismetAnimationLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "MainContent/LocomotionSystem/Character/LocomotionSystem_CharacterBase.h"
@@ -34,6 +36,7 @@ void ULocomotionSystem::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	// ...
+	CheckAcceleration();
 }
 
 FS_Animset* ULocomotionSystem::GetAnimset(const FName& RowName) const
@@ -172,4 +175,28 @@ void ULocomotionSystem::SetRotationRate(const FRotator& NewRotationRate)
 {
 	MovementComponent->RotationRate = NewRotationRate;
 	OnSetRotationModeDelegate.Broadcast(RotationMode);
+}
+
+void ULocomotionSystem::CheckAcceleration()
+{
+	if (HasAcceleration != GetIsAccelerating())
+	{
+		HasAcceleration = GetIsAccelerating();
+		OnAccelerationChangedDelegate.Broadcast(HasAcceleration, GetLastVelocityDirection());
+	}
+}
+
+bool ULocomotionSystem::GetIsAccelerating()
+{
+	if (MovementComponent)
+	{
+		return MovementComponent->GetCurrentAcceleration().Size2D() > 0.0f;
+	}
+	return false;
+}
+
+
+float ULocomotionSystem::GetLastVelocityDirection()
+{
+	return UKismetAnimationLibrary::CalculateDirection(MovementComponent->GetLastInputVector(), OwnerActor->GetActorRotation());
 }

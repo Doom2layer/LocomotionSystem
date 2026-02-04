@@ -79,6 +79,7 @@ void ULocomotionSystem_AnimInst::Initialization()
 		LocomotionSystem->GetOnSetMovementType().AddDynamic(this, &ULocomotionSystem_AnimInst::OnSetMovementType);
 		LocomotionSystem->GetOnSetSprinting().AddDynamic(this, &ULocomotionSystem_AnimInst::OnSetSprint);
 		LocomotionSystem->GetOnSetRotationMode().AddDynamic(this, &ULocomotionSystem_AnimInst::OnSetRotationMode);
+		LocomotionSystem->GetOnAccelerationChanged().AddDynamic(this, &ULocomotionSystem_AnimInst::OnAccelerationChanged);
 		// Set initial state - this should be false on initialization
 		HasAcceleration = false;
 	}
@@ -140,6 +141,13 @@ void ULocomotionSystem_AnimInst::OnSetRotationMode(ERotationMode NewRotation)
 			RotationModeChanged = false;
 		}, 0.1f, false);
 	}
+}
+
+void ULocomotionSystem_AnimInst::OnAccelerationChanged(bool bHasAcceleration, float InAcceleration)
+{
+	PlayStartAnim = bHasAcceleration;
+	LastVelocityDirection = InAcceleration;
+	LastDirection = SelectCardinalDirectionFromAngle(LastVelocityDirection, CardinalDirectionDeadZone, LocalVelocityDirection, !LocalVelocity2D.IsZero());
 }
 
 
@@ -204,7 +212,9 @@ void ULocomotionSystem_AnimInst::SetAnimationData()
 
 	StopCardinalAnims = L_MovementStruct.StopCardinal;
 
-	PivotCardinalAnims = L_MovementStruct.PivotCardinal;	
+	PivotCardinalAnims = L_MovementStruct.PivotCardinal;
+
+	ForwardFacingStartAnims = L_MovementStruct.ForwardFacingStarts;
 
 	TurnInPlace = L_MovementStruct.TurnInPlace;
 
@@ -584,6 +594,7 @@ void ULocomotionSystem_AnimInst::SetupStartAnimLayer(const FAnimUpdateContext& C
 	FSequenceEvaluatorReference SequenceEvaluatorReference = USequenceEvaluatorLibrary::ConvertToSequenceEvaluator(Node, Result);
 	if (Result == EAnimNodeReferenceConversionResult::Succeeded)
 	{
+		// For non-forward facing, we always play the forward facing start anims (strafing)
 		UAnimSequence* SequenceToPlay = nullptr;
 		switch (LocalVelocityDirectionNoOffset)
 		{
@@ -600,8 +611,27 @@ void ULocomotionSystem_AnimInst::SetupStartAnimLayer(const FAnimUpdateContext& C
 			SequenceToPlay = StartCardinalAnims.Right;
 			break;
 		}
-  		USequenceEvaluatorLibrary::SetExplicitTime(USequenceEvaluatorLibrary::SetSequence(SequenceEvaluatorReference, SequenceToPlay), 0.0f);
+		// If forward facing, we select from the forward facing start anims based on last direction
+		UAnimSequence* FFSequenceToPlay = nullptr;
+		switch (LastDirection)
+		{
+		case ECardinalDirection::Forward:
+			FFSequenceToPlay = IsSprinting ? SprintCycleAnim : ForwardFacingStartAnims.StartForward;
+			break;
+		case ECardinalDirection::Backward:
+			FFSequenceToPlay = LastVelocityDirection > 0.0 ? ForwardFacingStartAnims.StartForwardR180 : ForwardFacingStartAnims.StartForwardL180;
+			break;
+		case ECardinalDirection::Left:
+			FFSequenceToPlay = ForwardFacingStartAnims.StartForwardL90;
+			break;
+		case ECardinalDirection::Right:
+			FFSequenceToPlay = ForwardFacingStartAnims.StartForwardR90;
+			break;
+		}
+		
+  		USequenceEvaluatorLibrary::SetExplicitTime(USequenceEvaluatorLibrary::SetSequence(SequenceEvaluatorReference, IsForwardFacing() ? FFSequenceToPlay : SequenceToPlay), 0.0f);
 		StrideWarpingStartAlpha = 0.0f;
+		LastDirection = IsForwardFacing() ? ECardinalDirection::Forward : LastDirection;
 	}
 }
 

@@ -15,6 +15,7 @@ enum class EMovementType : uint8;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetAnimSet, const FName&, Animset);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetMovementType, EMovementType, NewMovementType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetSprinting, bool, NewSprinting);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAccelerationChanged, bool, HasAcceleration, float, NewAcceleration);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetRotationMode, ERotationMode, NewRotationMode);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -30,6 +31,7 @@ public:
 	FORCEINLINE FOnSetMovementType& GetOnSetMovementType() { return OnSetMovementTypeDelegate; }
 	FORCEINLINE FOnSetSprinting& GetOnSetSprinting() { return OnSetSprintingDelegate; }
 	FORCEINLINE FOnSetRotationMode& GetOnSetRotationMode() { return OnSetRotationModeDelegate; }
+	FORCEINLINE FOnAccelerationChanged& GetOnAccelerationChanged() { return OnAccelerationChangedDelegate; }
 	FORCEINLINE EMovementType GetMovementType() const { return MovementType; }
 	FORCEINLINE FRotator GetBaseAimRotation() const { return BaseAimRotation; }
 	FORCEINLINE bool GetHasAcceleration() const { return HasAcceleration; }
@@ -48,23 +50,39 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION()
 	void SetSprint(bool bSprint);
 
+	UFUNCTION()
 	void SetCharacterBaseAimRotation();
 
+	UFUNCTION()
 	void SetRotationMode(ERotationMode NewRotationMode);
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
 	void SetMovementConfigs();
 
+	UFUNCTION()
 	void SetMaxWalkSpeed(float Speed);
 
+	UFUNCTION()
 	void SetMaxAcceleration(float Acceleration);
 
+	UFUNCTION()
 	void SetRotationRate(const FRotator& NewRotationRate);
+
+	UFUNCTION()
+	void CheckAcceleration();
+
+	UFUNCTION()
+	bool GetIsAccelerating();
+
+	UFUNCTION()
+	float GetLastVelocityDirection();
 
 	UCharacterMovementComponent* GetMovementComponent() const;
 
@@ -91,6 +109,8 @@ protected:
 	FOnSetSprinting OnSetSprintingDelegate;
 
 	FOnSetRotationMode OnSetRotationModeDelegate;
+
+	FOnAccelerationChanged OnAccelerationChangedDelegate;
 
 	UPROPERTY(Transient)
 	ACharacter* OwnerActor;

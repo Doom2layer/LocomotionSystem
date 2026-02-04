@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MainContent/LocomotionSystem/Data/Locomotion_Enums.h"
 #include "MainContent/LocomotionSystem/Data/Locomotion_Structs.h"
 #include "LocomotionSystem_AnimInst.generated.h"
 
@@ -91,6 +92,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Sequences")
 	FS_Anim_Cardinal StopCardinalAnims;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Sequences")
+	FS_Anim_ForwardFacingStarts ForwardFacingStartAnims;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Sequences")
 	FS_Anim_Cardinal PivotCardinalAnims;
 	
@@ -204,7 +208,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Velocity Data")
 	bool HasVelocity;
-		
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Velocity Data")
+	ECardinalDirection LastDirection = ECardinalDirection::Forward;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Velocity Data")
+	float LastVelocityDirection;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rotation Data")
 	FRotator WorldRotation;
 	
@@ -396,6 +406,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character State Data")
 	bool RotationModeChanged = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character State Data")
+	bool PlayStartAnim;
+
 	
 private:
 	/**
@@ -412,6 +426,9 @@ private:
 
 	UFUNCTION()
 	void OnSetRotationMode(ERotationMode NewRotation);
+
+	UFUNCTION()
+	void OnAccelerationChanged(bool bHasAcceleration, float InAcceleration);
 	
 	UFUNCTION(BlueprintPure, BlueprintCallable, Category = "Idle Breaks", meta = (BlueprintThreadSafe))
 	bool CanPlayIdleBreaks() const;
@@ -571,4 +588,5 @@ private:
 
 	UFUNCTION(BlueprintCallable, Category= "Helper Functions", meta = (BlueprintThreadSafe))
 	ECardinalDirection GetOppositeCardinalDirection(ECardinalDirection CurrentDirection) const;
+	
 };

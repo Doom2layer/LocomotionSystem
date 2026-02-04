@@ -53,6 +53,27 @@ struct HORRORZONE_API FS_Anim_Transitions : public FTableRowBase
 	
 };
 
+USTRUCT(BlueprintType, meta=(DisplayName="S Anim Forward Facing Starts"))
+struct HORRORZONE_API FS_Anim_ForwardFacingStarts : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	TObjectPtr<UAnimSequence> StartForward;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	TObjectPtr<UAnimSequence> StartForwardL90;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	TObjectPtr<UAnimSequence> StartForwardL180;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	TObjectPtr<UAnimSequence> StartForwardR90;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	TObjectPtr<UAnimSequence> StartForwardR180;
+};
+
 USTRUCT(BlueprintType, meta=(DisplayName="S Anim Turn In Place"))
 struct HORRORZONE_API FS_Anim_TurnInPlace : public FTableRowBase
 {
@@ -99,6 +120,9 @@ struct HORRORZONE_API FS_Anim_Movement : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Start Cardinal")
 	FS_Anim_Cardinal StartCardinal	= FS_Anim_Cardinal();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Forward Facing Starts")
+	FS_Anim_ForwardFacingStarts ForwardFacingStarts = FS_Anim_ForwardFacingStarts();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cycle Cardinal")
 	FS_Anim_Cardinal CycleCardinal = FS_Anim_Cardinal();
