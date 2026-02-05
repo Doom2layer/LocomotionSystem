@@ -195,7 +195,6 @@ bool ULocomotionSystem::GetIsAccelerating()
 	return false;
 }
 
-
 float ULocomotionSystem::GetLastVelocityDirection()
 {
 	return UKismetAnimationLibrary::CalculateDirection(MovementComponent->GetLastInputVector(), OwnerActor->GetActorRotation());

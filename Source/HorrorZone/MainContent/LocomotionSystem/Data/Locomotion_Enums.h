@@ -36,3 +36,13 @@ enum class ERotationMode : uint8
 	Strafing UMETA(DisplayName = "Strafing"),
 	ForwardFacing UMETA(DisplayName = "Forward Facing")
 };
+
+UENUM(BlueprintType)
+enum class EAnimBlendType : uint8
+{
+	None UMETA(DisplayName = "None"),
+	FullBody UMETA(DisplayName = "Full Body"),
+	UpperBody UMETA(DisplayName = "Upper Body"),
+	UpperBodyMask UMETA(DisplayName = "Upper Body Mask"),
+	UpperBodyLowerBodySplitMask UMETA(DisplayName = "Upper Body Lower Body Split Mask")
+};

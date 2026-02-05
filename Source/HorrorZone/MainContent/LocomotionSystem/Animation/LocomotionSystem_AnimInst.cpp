@@ -801,6 +801,54 @@ void ULocomotionSystem_AnimInst::UpdatePivotStateLayer(const FAnimUpdateContext&
 	}
 }
 
+void ULocomotionSystem_AnimInst::SetupStartStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node)
+{
+	if (IsForwardFacing())
+	{
+		MaxTurnYawValue = 0.0f;
+		
+		TurnYawCurveValue = 0.0f;
+		
+		ReachedEndOfTurn = LastDirection == ECardinalDirection::Forward ? true : false;
+	}
+}
+
+void ULocomotionSystem_AnimInst::UpdateStartStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node)
+{
+	FAnimationStateResultReference ResultReference;
+	EAnimNodeReferenceConversionResult ConversionResult;
+	UAnimationStateMachineLibrary::ConvertToAnimationStateResult(Node, ResultReference, ConversionResult);
+	if (ConversionResult == EAnimNodeReferenceConversionResult::Succeeded)
+	{
+		if (!UAnimationStateMachineLibrary::IsStateBlendingOut(Context, ResultReference))
+		{
+			if (IsForwardFacing())
+			{
+				ProcessTurnYawForwardFacing();
+				RootYawOffsetMode = ReachedEndOfTurn ? ERootYawOffsetMode::BlendOut : ERootYawOffsetMode::Accumulate;
+			}
+			else
+			{
+				RootYawOffsetMode = ERootYawOffsetMode::Hold;
+			}
+		}
+	}
+}
+
+void ULocomotionSystem_AnimInst::UpdateStopStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node)
+{
+	FAnimationStateResultReference ResultReference;
+	EAnimNodeReferenceConversionResult ConversionResult;
+	UAnimationStateMachineLibrary::ConvertToAnimationStateResult(Node, ResultReference, ConversionResult);
+	if (ConversionResult == EAnimNodeReferenceConversionResult::Succeeded)
+	{
+		if(!UAnimationStateMachineLibrary::IsStateBlendingOut(Context, ResultReference))
+		{
+			RootYawOffsetMode = ERootYawOffsetMode::Accumulate;
+		}
+	}
+}
+
 FS_Anim_Movement ULocomotionSystem_AnimInst::GetMovementFromMovementType(EMovementType MovementType, FS_Anim_MovementGroup Movements)
 {
 	return  MovementType == EMovementType::Walk ? Movements.Walk :
@@ -1082,4 +1130,37 @@ ECardinalDirection ULocomotionSystem_AnimInst::GetOppositeCardinalDirection(ECar
 		return ECardinalDirection::Left;
 	}
 	return ECardinalDirection::Forward;
+}
+
+void ULocomotionSystem_AnimInst::ProcessTurnYawForwardFacing()
+{
+	float L_PreviousTurnYawCurveValue = TurnYawCurveValue;
+	if (UKismetMathLibrary::NearlyEqual_FloatFloat(GetCurveValue(Curve_TurnYawWeight), 0.0f, 0.000001))
+	{
+		TurnYawCurveValue = 0.0f;
+		L_PreviousTurnYawCurveValue = 0.0f;
+		if (!MaxTurnYawValue == 0.0f)
+		{
+			ReachedEndOfTurn = true;
+		}
+	}
+	else
+	{
+		TurnYawCurveValue = GetCurveValue(Curve_RemainingTurnYaw) / GetCurveValue(Curve_TurnYawWeight);
+		if (UKismetMathLibrary::Abs(TurnYawCurveValue) > UKismetMathLibrary::Abs(MaxTurnYawValue))
+		{
+			MaxTurnYawValue = TurnYawCurveValue;
+			if (L_PreviousTurnYawCurveValue != 0.0f)
+			{
+				SetRootYawOffset(RootYawOffset - UKismetMathLibrary::Clamp(UKismetMathLibrary::SafeDivide(LocalVelocityDirectionAngle, TurnYawCurveValue) * (TurnYawCurveValue - L_PreviousTurnYawCurveValue), UKismetMathLibrary::Abs(LocalVelocityDirectionAngle) * -1.0f, UKismetMathLibrary::Abs(LocalVelocityDirectionAngle)));
+			}
+		}
+		else
+		{
+			if (L_PreviousTurnYawCurveValue != 0.0f)
+			{
+				SetRootYawOffset(RootYawOffset - UKismetMathLibrary::Clamp(UKismetMathLibrary::SafeDivide(LocalVelocityDirectionAngle, TurnYawCurveValue) * (TurnYawCurveValue - L_PreviousTurnYawCurveValue), UKismetMathLibrary::Abs(LocalVelocityDirectionAngle) * -1.0f, UKismetMathLibrary::Abs(LocalVelocityDirectionAngle)));
+			}
+		}
+	}
 }

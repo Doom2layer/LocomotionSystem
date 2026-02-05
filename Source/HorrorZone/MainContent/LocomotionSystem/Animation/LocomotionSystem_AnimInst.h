@@ -256,6 +256,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn In Place")
 	float TurnYawCurveValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn In Place")
+	bool ReachedEndOfTurn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn In Place")
+	float MaxTurnYawValue;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "")
 	float LocalVelocityDirectionAngle;
@@ -410,7 +416,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character State Data")
 	bool PlayStartAnim;
 
-	
 private:
 	/**
 	 * FUNCTIONS 
@@ -481,6 +486,36 @@ private:
 	UFUNCTION(Category= "Helper Functions", meta = (BlueprintThreadSafe))
 	void UpdateJumpFallDataLayer(float DeltaTime);
 	
+	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void SetupIdleStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void UpdateIdleStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void SetupTurnInPlaceStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void UpdateIdleState(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void SetupLandRecoveryStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void SetupPivotStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+	
+	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void UpdatePivotStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void SetupStartStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void UpdateStartStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void UpdateStopStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+	
 	UFUNCTION(Category="AnimNodeFunction", BlueprintCallable, meta=(BlueprintThreadSafe))
 	void SetupIdleBreakAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
 
@@ -505,38 +540,17 @@ private:
 	UFUNCTION(Category="AnimNodeFunction", BlueprintCallable, meta=(BlueprintThreadSafe))
 	void SetupStopAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
 	
-	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
-	void SetupIdleStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
-
-	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
-	void UpdateIdleStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
-
 	UFUNCTION(Category="AnimNodeFunction", BlueprintCallable, meta=(BlueprintThreadSafe))
 	void UpdateStartAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
 
 	UFUNCTION(Category="AnimNodeFunction", BlueprintCallable, meta=(BlueprintThreadSafe))
 	void UpdateStopAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
 
-	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
-	void SetupTurnInPlaceStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
-
-	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
-	void UpdateIdleState(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
-
-	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
-	void SetupLandRecoveryStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
-
 	UFUNCTION(Category="AnimNodeFunction", BlueprintCallable, meta=(BlueprintThreadSafe))
 	void SetupPivotAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
 
 	UFUNCTION(Category="AnimNodeFunction", BlueprintCallable, meta=(BlueprintThreadSafe))
 	void UpdatePivotAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
-
-	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
-	void SetupPivotStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
-	
-	UFUNCTION(Category="StateNodeFunctions", BlueprintCallable, meta=(BlueprintThreadSafe))
-	void UpdatePivotStateLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
 	
 	UFUNCTION(Category="Thread Safe Functions", BlueprintCallable, meta=(BlueprintThreadSafe))
 	void UpdateJumpFallData();
@@ -588,5 +602,8 @@ private:
 
 	UFUNCTION(BlueprintCallable, Category= "Helper Functions", meta = (BlueprintThreadSafe))
 	ECardinalDirection GetOppositeCardinalDirection(ECardinalDirection CurrentDirection) const;
+	
+	UFUNCTION(BlueprintCallable, Category= "Turn In Place", meta = (BlueprintThreadSafe))
+	void ProcessTurnYawForwardFacing();
 	
 };

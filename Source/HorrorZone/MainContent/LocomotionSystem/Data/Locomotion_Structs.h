@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Locomotion_Enums.h"
 #include "Locomotion_Structs.generated.h"
 
 class UBlendSpace1D;
@@ -107,6 +108,61 @@ struct HORRORZONE_API FS_Anim_Cardinal : public FTableRowBase
 	TObjectPtr<UAnimSequence> Right = nullptr;
 };
 
+USTRUCT(BlueprintType)
+struct HORRORZONE_API FS_AnimOverride_Sequence: public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	TObjectPtr<UAnimSequence> AnimationSequence = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	float StartPosition;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	float OverrideWeight;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	float InterSpeed = 10.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	float BlendTime = 0.25f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	EAnimBlendType BlendType = EAnimBlendType::None;
+};
+
+USTRUCT(BlueprintType)
+struct HORRORZONE_API FS_AnimOverride_ForwardFacingStarts: public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	FS_AnimOverride_Sequence StartForward = FS_AnimOverride_Sequence();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	FS_AnimOverride_Sequence StartForwardL90 = FS_AnimOverride_Sequence();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	FS_AnimOverride_Sequence StartForwardL180 = FS_AnimOverride_Sequence();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	FS_AnimOverride_Sequence StartForwardR90 = FS_AnimOverride_Sequence();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	FS_AnimOverride_Sequence StartForwardR180 = FS_AnimOverride_Sequence();
+	
+};
+
+USTRUCT(BlueprintType)
+struct HORRORZONE_API FS_AnimOverride_Movement : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	FS_AnimOverride_ForwardFacingStarts ForwardFacingStarts = FS_AnimOverride_ForwardFacingStarts();
+};
+
 USTRUCT(BlueprintType, meta=(DisplayName="S Anim Movement"))
 struct HORRORZONE_API FS_Anim_Movement : public FTableRowBase
 {
@@ -138,6 +194,9 @@ struct HORRORZONE_API FS_Anim_Movement : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Configs")
 	FS_Anim_Config Config = FS_Anim_Config();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim Overrides")
+	TMap<FName, FS_AnimOverride_Movement> AnimOverrides;
 
 };
 
@@ -254,5 +313,4 @@ struct HORRORZONE_API FS_Animset : public FTableRowBase
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animset")
 	FS_Anim_MovementGroup Movements;
-
 };
