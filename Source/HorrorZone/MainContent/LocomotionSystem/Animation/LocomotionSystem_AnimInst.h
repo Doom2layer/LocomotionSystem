@@ -440,6 +440,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character State Data")
 	bool PlayStartAnim;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Montages")
+	float UpperBodyAlpha;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Montages")
+	float UpperBodyDynamicAdditiveWeight;
 private:
 	/**
 	 * FUNCTIONS 
@@ -653,4 +658,11 @@ private:
 
 	UFUNCTION(BlueprintCallable, Category= "Helper Functions", meta = (BlueprintThreadSafe))
 	FS_AnimOverride_Sequence GetStartAnimOverride() const;
+
+	UFUNCTION(BlueprintCallable, Category= "Helper Functions", meta = (BlueprintThreadSafe))
+	void UpdateUpperBodyAlpha(float DeltaTime);
+
+	UFUNCTION(BlueprintCallable, Category= "Helper Functions", meta = (BlueprintThreadSafe))
+	void UpdateBlendWeightData(float DeltaTime);
+
 };

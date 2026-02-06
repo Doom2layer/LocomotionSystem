@@ -4,6 +4,7 @@
 #include "MainContent/LocomotionSystem/Character/LocomotionSystem_CharacterBase.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
 
 // Sets default values
@@ -12,6 +13,7 @@ ALocomotionSystem_CharacterBase::ALocomotionSystem_CharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	LocomotionSystem = CreateDefaultSubobject<ULocomotionSystem>(TEXT("Locomotion System"));
+	MontageHelper = CreateDefaultSubobject<UMontageHelper>(TEXT("Montage Helper"));
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
@@ -91,7 +93,6 @@ void ALocomotionSystem_CharacterBase::SwitchRotationMode(bool IsPressed)
 
 	if (IsPressed)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Switch Rotation"));
 		ERotationMode NewMode = LocomotionSystem->GetRotationMode() == ERotationMode::ForwardFacing ? ERotationMode::Strafing : ERotationMode::ForwardFacing;
 		LocomotionSystem->SetRotationMode(NewMode);
 	}

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "LocomotionSystem_CharacterBase.generated.h"
 
+class UMontageHelper;
 class ULocomotionSystem;
 
 UCLASS()
@@ -21,8 +22,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	FORCEINLINE ULocomotionSystem* GetLocomotionSystem() const { return LocomotionSystem; }
+	FORCEINLINE UMontageHelper* GetMontageHelper() const { return MontageHelper; }
 	FORCEINLINE void SetLocomotionSystem(ULocomotionSystem* NewLocomotionSystem) { LocomotionSystem = NewLocomotionSystem; }
-
+	FORCEINLINE void SetMontageHelper(UMontageHelper* NewMontageHelper) { MontageHelper = NewMontageHelper; }
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,4 +42,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	ULocomotionSystem* LocomotionSystem;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+	UMontageHelper* MontageHelper;
 };

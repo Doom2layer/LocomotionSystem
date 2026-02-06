@@ -74,9 +74,22 @@ void ULocomotionSystem::SetMovementType(EMovementType NewMovementType)
 
 void ULocomotionSystem::SetMovementConfigs()
 {
-	SetMaxWalkSpeed(GetMovementConfigsFromAnimSet().MaxWalkSpeed);
-	SetMaxAcceleration(GetMovementConfigsFromAnimSet().MaxAcceleration);
-	SetRotationRate(GetMovementConfigsFromAnimSet().RotationRate);
+	// Add null check for MovementComponent
+	if (!MovementComponent)
+	{
+		MovementComponent = GetMovementComponent();
+		if (!MovementComponent)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("SetMovementConfigs: MovementComponent is null"));
+			return;
+		}
+	}
+
+	FS_Anim_Config L_Config = GetMovementConfigsFromAnimSet();
+    
+	SetMaxWalkSpeed(L_Config.MaxWalkSpeed);
+	SetMaxAcceleration(L_Config.MaxAcceleration);
+	SetRotationRate(L_Config.RotationRate);
 }
 
 FS_Anim_Config ULocomotionSystem::GetMovementConfigsFromAnimSet()

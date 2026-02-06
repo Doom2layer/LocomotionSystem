@@ -56,6 +56,8 @@ void ULocomotionSystem_AnimInst::NativeThreadSafeUpdateAnimation(float DeltaSeco
 	UpdateVelocityData();
 	UpdateAccelerationData();
 	UpdateWallDetectionHeuristic();
+	UpdateUpperBodyAlpha(DeltaSeconds);
+	UpdateBlendWeightData(DeltaSeconds);
 	UpdateRootYawOffset(DeltaSeconds);
 	UpdateCharacterStateData();
 	UpdateAimingData(DeltaSeconds);
@@ -168,11 +170,13 @@ void ULocomotionSystem_AnimInst::SetAnimationData()
 	SprintCycleAnim = L_GeneralStruct.Sprint.SprintCycle;
 
 	FS_AnimOverride_Movement* L_AnimOverrideStruct = L_MovementStruct.AnimOverrides.Find(LSAnimOverride);
-
+	
 	if (!L_AnimOverrideStruct)
 	{
 		L_AnimOverrideStruct = L_MovementStruct.AnimOverrides.Find("Default");
 	}
+
+	if (!L_AnimOverrideStruct) return;
 
 	FS_Anim_Config L_AnimConfig;
 
@@ -1325,4 +1329,26 @@ FS_AnimOverride_Sequence ULocomotionSystem_AnimInst::GetStartAnimOverride() cons
 		}
 	}
 	return AnimOverrideStart;
+}
+
+void ULocomotionSystem_AnimInst::UpdateUpperBodyAlpha(float DeltaTime)
+{
+	UpperBodyAlpha = UKismetMathLibrary::FInterpTo(
+		UpperBodyAlpha,
+		HasAcceleration || GetCurveValue(Curve_TurnYawWeight) > 0.0f ? 0.0f : 1.0f,
+		DeltaTime,
+		10.0f
+	);
+}
+
+void ULocomotionSystem_AnimInst::UpdateBlendWeightData(float DeltaTime)
+{
+	UpperBodyDynamicAdditiveWeight =
+	IsAnyMontagePlaying() && IsOnGround ? 1.0f :
+	UKismetMathLibrary::FInterpTo(
+	UpperBodyDynamicAdditiveWeight,
+	0.0f,
+	DeltaTime,
+	6.0f
+	);
 }

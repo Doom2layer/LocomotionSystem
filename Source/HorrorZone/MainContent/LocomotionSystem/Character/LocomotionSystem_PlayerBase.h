@@ -46,7 +46,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoWalk();
-	
+
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJog();
 
@@ -55,8 +55,20 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoUncrouch();
+
+	UFUNCTION(BlueprintCallable, Category="Input")
+	void TestFunc();	
 	
 protected:
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnMontageCompleted(FName ID);
+
+	UFUNCTION()
+	void OnNotifyBegin(FName ID, FName NotifyName);
+
+	
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MoveAction;
@@ -83,6 +95,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 
+	UPROPERTY(EditAnywhere, Category="Animation")
+	UAnimMontage* TestMontage;	
+	
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
