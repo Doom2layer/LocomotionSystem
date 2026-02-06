@@ -91,9 +91,37 @@ FS_Anim_Config ULocomotionSystem::GetMovementConfigsFromAnimSet()
 	{
 		return Animset->General.Sprint.Configs;
 	}
-	return GetMovementFromMovementType(MovementType, Animset->Movements).Config;
+	if (GetCurrentOverrideStruct().Configs.Enabled)
+	{
+		//return overriden configs
+		return GetCurrentOverrideStruct().Configs.Configs;
+	}
+	//return global configs
+	return GetCurrentMovementStruct().Config;
 }
 
+void ULocomotionSystem::SetAnimOverride(const FName& NewAnimOverride)
+{
+	AnimOverride = NewAnimOverride;
+	OnSetAnimOverrideDelegate.Broadcast(AnimOverride);
+}
+
+FS_AnimOverride_Movement ULocomotionSystem::GetCurrentOverrideStruct()
+{
+
+	FS_AnimOverride_Movement* L_AnimOverrideStruct = GetCurrentMovementStruct().AnimOverrides.Find(AnimOverride);
+
+	if (!L_AnimOverrideStruct)
+	{
+		L_AnimOverrideStruct = GetCurrentMovementStruct().AnimOverrides.Find("Default");
+	}
+	return *L_AnimOverrideStruct;
+}
+
+FS_Anim_Movement ULocomotionSystem::GetCurrentMovementStruct()
+{
+	return GetMovementFromMovementType(MovementType, GetAnimset(CurrentAnimsetRowName)->Movements);
+}
 
 FS_Anim_Movement ULocomotionSystem::GetMovementFromMovementType(EMovementType InMovementType, FS_Anim_MovementGroup Movements)
 {

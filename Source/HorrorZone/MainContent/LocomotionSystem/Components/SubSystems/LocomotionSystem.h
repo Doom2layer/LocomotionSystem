@@ -17,7 +17,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetMovementType, EMovementType, N
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetSprinting, bool, NewSprinting);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAccelerationChanged, bool, HasAcceleration, float, NewAcceleration);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetRotationMode, ERotationMode, NewRotationMode);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetAnimOverride, FName, AnimOverride);
+	
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class HORRORZONE_API ULocomotionSystem : public UActorComponent
 {
@@ -32,11 +33,13 @@ public:
 	FORCEINLINE FOnSetSprinting& GetOnSetSprinting() { return OnSetSprintingDelegate; }
 	FORCEINLINE FOnSetRotationMode& GetOnSetRotationMode() { return OnSetRotationModeDelegate; }
 	FORCEINLINE FOnAccelerationChanged& GetOnAccelerationChanged() { return OnAccelerationChangedDelegate; }
+	FORCEINLINE FOnSetAnimOverride& GetOnSetAnimOverride() { return OnSetAnimOverrideDelegate; }
 	FORCEINLINE EMovementType GetMovementType() const { return MovementType; }
 	FORCEINLINE FRotator GetBaseAimRotation() const { return BaseAimRotation; }
 	FORCEINLINE bool GetHasAcceleration() const { return HasAcceleration; }
 	FORCEINLINE bool GetIsSprinting() const { return IsSprinting; }
 	FORCEINLINE ERotationMode GetRotationMode() const { return RotationMode; }
+	FORCEINLINE FName GetAnimOverride() const { return AnimOverride; }
 	FORCEINLINE void SetIsSprinting(bool NewSprinting) { IsSprinting = NewSprinting;}
 	FORCEINLINE void SetDataTable(UDataTable* NewDataTable) { AnimsetDataTable = NewDataTable; }
 	FORCEINLINE void SetAnimset(const FName& RowName);
@@ -58,6 +61,9 @@ public:
 
 	UFUNCTION()
 	void SetRotationMode(ERotationMode NewRotationMode);
+
+	UFUNCTION()
+	void SetAnimOverride(const FName& NewAnimOverride);
 	
 protected:
 	// Called when the game starts
@@ -83,6 +89,12 @@ protected:
 
 	UFUNCTION()
 	float GetLastVelocityDirection();
+
+	UFUNCTION()
+	FS_AnimOverride_Movement GetCurrentOverrideStruct();
+
+	UFUNCTION()
+	FS_Anim_Movement GetCurrentMovementStruct();
 
 	UCharacterMovementComponent* GetMovementComponent() const;
 
@@ -112,6 +124,8 @@ protected:
 
 	FOnAccelerationChanged OnAccelerationChangedDelegate;
 
+	FOnSetAnimOverride OnSetAnimOverrideDelegate;
+
 	UPROPERTY(Transient)
 	ACharacter* OwnerActor;
 
@@ -126,4 +140,7 @@ protected:
 
 	UPROPERTY()
 	bool HasAcceleration;
+
+	UPROPERTY()
+	FName AnimOverride = "Default";
 };

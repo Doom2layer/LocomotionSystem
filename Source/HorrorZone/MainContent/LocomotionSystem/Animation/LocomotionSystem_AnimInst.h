@@ -74,8 +74,32 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Locomotion System")
 	FS_Animset Animset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character State Data")
-	ERotationMode RotationMode;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Locomotion System")
+	FName LSAnimsetName;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Locomotion System")
+	FName LSAnimOverride = "Default";
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Overrides")
+	FS_AnimOverride_ForwardFacingStarts ForwardFacingStartOverride;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Overrides")
+	FS_AnimOverride_Sequence AnimOverrideStart;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Overrides")
+	FS_AnimOverride_Sequence AnimOverrideCycle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Overrides")
+	FS_AnimOverride_Sequence AnimOverrideStop;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Overrides")
+	FS_AnimOverride_Sequence AnimOverridePivot;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Overrides")
+	FS_AnimOverride_Sequence AnimOverrideIdle;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Override | Caches")
+	FS_AnimOverride_Sequence AnimOverrideStartPoseCached;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anim Sequences")
 	UAnimSequence* IdleAnimation;
@@ -158,9 +182,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Aiming Data")
 	float AimYaw;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Locomotion System")
-	FName LSAnimsetName;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Idle Breaks")
 	float TimeUntilSingleBreak;
 
@@ -200,6 +221,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 	float SlideWarpingBlendInDurationScaled = 0.2f;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+	float CardinalDirectionDeadZone;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Location Data")
 	float DisplacementSpeed;
 	
@@ -226,9 +250,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Rotation Data")
 	float YawDeltaSinceLastUpdate;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
-	float CardinalDirectionDeadZone;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn In Place ")
 	bool DisableRootYawOffset;	
@@ -316,6 +337,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "")
 	EMovementType LS_MovementType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character State Data")
+	ERotationMode RotationMode;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character State Data")
 	bool IsSprinting;
@@ -434,6 +458,9 @@ private:
 
 	UFUNCTION()
 	void OnAccelerationChanged(bool bHasAcceleration, float InAcceleration);
+
+	UFUNCTION()
+	void OnSetAnimSetOverride(FName NewAnimSetOverride);
 	
 	UFUNCTION(BlueprintPure, BlueprintCallable, Category = "Idle Breaks", meta = (BlueprintThreadSafe))
 	bool CanPlayIdleBreaks() const;
@@ -519,6 +546,21 @@ private:
 	UFUNCTION(Category="AnimNodeFunction", BlueprintCallable, meta=(BlueprintThreadSafe))
 	void SetupIdleBreakAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
 
+	UFUNCTION(Category="AnimNodeFunction | AnimOverrides", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void UpdateAnimOverrideStartAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="AnimNodeFunction | AnimOverrides", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void UpdateAnimOverrideCycleAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="AnimNodeFunction | AnimOverrides", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void UpdateAnimOverrideStopAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="AnimNodeFunction | AnimOverrides", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void UpdateAnimOverridePivotAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(Category="AnimNodeFunction | AnimOverrides", BlueprintCallable, meta=(BlueprintThreadSafe))
+	void UpdateAnimOverrideIdleAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+	
 	UFUNCTION(Category="AnimNodeFunction", BlueprintCallable, meta=(BlueprintThreadSafe))
 	void UpdateCycleAnimLayer(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
 
@@ -605,5 +647,10 @@ private:
 	
 	UFUNCTION(BlueprintCallable, Category= "Turn In Place", meta = (BlueprintThreadSafe))
 	void ProcessTurnYawForwardFacing();
-	
+
+	UFUNCTION(BlueprintCallable, Category= "Helper Functions", meta = (BlueprintThreadSafe))
+	UAnimSequence* GetStartAnim() const;
+
+	UFUNCTION(BlueprintCallable, Category= "Helper Functions", meta = (BlueprintThreadSafe))
+	FS_AnimOverride_Sequence GetStartAnimOverride() const;
 };

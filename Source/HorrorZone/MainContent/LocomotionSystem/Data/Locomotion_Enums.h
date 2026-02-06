@@ -44,5 +44,6 @@ enum class EAnimBlendType : uint8
 	FullBody UMETA(DisplayName = "Full Body"),
 	UpperBody UMETA(DisplayName = "Upper Body"),
 	UpperBodyMask UMETA(DisplayName = "Upper Body Mask"),
-	UpperBodyLowerBodySplitMask UMETA(DisplayName = "Upper Body Lower Body Split Mask")
+	LeftFingersMask UMETA(DisplayName = "Left Fingers Mask"),
+	UpperBodyLowerBodySplitMask UMETA(DisplayName = "Upper Body Lower Body Split Mask"),
 };

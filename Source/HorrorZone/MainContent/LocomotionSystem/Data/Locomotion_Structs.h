@@ -155,12 +155,42 @@ struct HORRORZONE_API FS_AnimOverride_ForwardFacingStarts: public FTableRowBase
 };
 
 USTRUCT(BlueprintType)
+struct HORRORZONE_API FS_AnimOverride_Configs : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim Override Configs")
+	bool Enabled = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim Override Configs")
+	FS_Anim_Config Configs = FS_Anim_Config();
+};
+
+USTRUCT(BlueprintType)
 struct HORRORZONE_API FS_AnimOverride_Movement : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Idle Animation Override")
+	FS_AnimOverride_Sequence Idle = FS_AnimOverride_Sequence();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Start Animation Override")
 	FS_AnimOverride_ForwardFacingStarts ForwardFacingStarts = FS_AnimOverride_ForwardFacingStarts();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Start Animation Override")
+	FS_AnimOverride_Sequence Start = FS_AnimOverride_Sequence();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cycle Animation Override")
+	FS_AnimOverride_Sequence Cycle = FS_AnimOverride_Sequence();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pivot Animation Override")
+	FS_AnimOverride_Sequence Pivot = FS_AnimOverride_Sequence();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Stop Animation Override")
+	FS_AnimOverride_Sequence Stop = FS_AnimOverride_Sequence();
+		
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anim Override Configs")
+	FS_AnimOverride_Configs Configs = FS_AnimOverride_Configs();
 };
 
 USTRUCT(BlueprintType, meta=(DisplayName="S Anim Movement"))
