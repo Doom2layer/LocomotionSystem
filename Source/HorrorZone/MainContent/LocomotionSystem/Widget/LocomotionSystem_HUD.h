@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "LocomotionSystem_HUD.generated.h"
 
+class UUserInterfaceSystem;
 /**
  * 
  */
@@ -13,5 +14,12 @@ UCLASS()
 class HORRORZONE_API ALocomotionSystem_HUD : public AHUD
 {
 	GENERATED_BODY()
+
+	ALocomotionSystem_HUD();
+	
+protected:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "User Interface")
+	UUserInterfaceSystem* UserInterfaceSystem;
 	
 };

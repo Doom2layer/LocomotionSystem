@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "LocomotionSystem_CharacterBase.generated.h"
 
+class UWeaponSystem;
 class UMontageHelper;
 class ULocomotionSystem;
 
@@ -23,8 +24,10 @@ public:
 
 	FORCEINLINE ULocomotionSystem* GetLocomotionSystem() const { return LocomotionSystem; }
 	FORCEINLINE UMontageHelper* GetMontageHelper() const { return MontageHelper; }
+	FORCEINLINE UWeaponSystem* GetWeaponSystem() const { return WeaponSystem; }
 	FORCEINLINE void SetLocomotionSystem(ULocomotionSystem* NewLocomotionSystem) { LocomotionSystem = NewLocomotionSystem; }
 	FORCEINLINE void SetMontageHelper(UMontageHelper* NewMontageHelper) { MontageHelper = NewMontageHelper; }
+	FORCEINLINE void SetWeaponSystem(UWeaponSystem* NewWeaponSystem) { WeaponSystem = NewWeaponSystem; }
 	
 protected:
 	// Called when the game starts or when spawned
@@ -45,4 +48,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UMontageHelper* MontageHelper;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+	UWeaponSystem* WeaponSystem;	
 };

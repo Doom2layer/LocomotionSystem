@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
+#include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
 
 // Sets default values
 ALocomotionSystem_CharacterBase::ALocomotionSystem_CharacterBase()
@@ -14,6 +15,7 @@ ALocomotionSystem_CharacterBase::ALocomotionSystem_CharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 	LocomotionSystem = CreateDefaultSubobject<ULocomotionSystem>(TEXT("Locomotion System"));
 	MontageHelper = CreateDefaultSubobject<UMontageHelper>(TEXT("Montage Helper"));
+	WeaponSystem = CreateDefaultSubobject<UWeaponSystem>(TEXT("Weapon System"));
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
