@@ -98,6 +98,11 @@ void ALocomotionSystem_PlayerBase::SetupPlayerInputComponent(UInputComponent* Pl
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ALocomotionSystem_PlayerBase::UJump);
 
 		EnhancedInputComponent->BindAction(SwitchRotationAction, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::SwitchRotation);
+
+		EnhancedInputComponent->BindAction(IncWeaponSlot, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::IncWeapon);
+
+		EnhancedInputComponent->BindAction(DecWeaponSlot, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::DecWeapon);
+		
 	}
 	else
 	{
@@ -226,4 +231,14 @@ void ALocomotionSystem_PlayerBase::OnOneKeyPressed()
 void ALocomotionSystem_PlayerBase::OnTwoKeyPressed()
 {
 	WeaponSystem->UseWeapon(0);
+}
+
+void ALocomotionSystem_PlayerBase::IncWeapon()
+{
+	WeaponSystem->IncrementSlot();
+}
+
+void ALocomotionSystem_PlayerBase::DecWeapon()
+{
+	WeaponSystem->DecrementSlot();
 }

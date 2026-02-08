@@ -3,6 +3,7 @@
 
 #include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
 
+#include "Kismet/KismetMathLibrary.h"
 #include "MainContent/LocomotionSystem/Weapons/WeaponBase.h"
 
 // Sets default values for this component's properties
@@ -94,3 +95,24 @@ void UWeaponSystem::EquipUnequipWeapon(const TObjectPtr<AWeaponBase> PreviousWea
 		NewWeaponClass->EquipItem();
 	}
 }
+
+void UWeaponSystem::IncrementSlot()
+{
+	if (!WeaponSlots.IsEmpty())
+	{
+		UseWeapon(
+			WeaponSlots.Num() - 1 == CurrentSlot ? 0 : CurrentSlot + 1
+		);
+	}
+}
+
+void UWeaponSystem::DecrementSlot()
+{
+	if (!WeaponSlots.IsEmpty())
+	{
+		UseWeapon(
+			CurrentSlot == 0 ? WeaponSlots.Num() - 1 : CurrentSlot - 1
+		);
+	}
+}
+

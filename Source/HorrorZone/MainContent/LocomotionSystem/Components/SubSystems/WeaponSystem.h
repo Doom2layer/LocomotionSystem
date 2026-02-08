@@ -21,6 +21,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void UseWeapon(int Slot);
+	
+	void IncrementSlot();
+
+	void DecrementSlot();
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -30,7 +35,7 @@ protected:
 	void AddWeapon(TObjectPtr<AWeaponBase> Weapon);
 	
 	void EquipUnequipWeapon(const TObjectPtr<AWeaponBase> PreviousWeaponClass, const TObjectPtr<AWeaponBase> NewWeaponClass);
-
+	
 	TObjectPtr<AWeaponBase> GetCurrentSlot();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Setup")

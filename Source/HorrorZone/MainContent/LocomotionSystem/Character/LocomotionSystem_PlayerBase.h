@@ -70,6 +70,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MoveAction;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* IncWeaponSlot;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* DecWeaponSlot;
+	
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* LookAction;
@@ -109,6 +115,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void OnTwoKeyPressed();
+
+	void IncWeapon();
+
+	void DecWeapon();
 	
 	void Walk(const FInputActionValue& Value);
 
