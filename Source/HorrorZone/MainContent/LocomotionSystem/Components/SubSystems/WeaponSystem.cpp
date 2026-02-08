@@ -62,22 +62,35 @@ void UWeaponSystem::AddWeapon(TObjectPtr<AWeaponBase> Weapon)
 
 void UWeaponSystem::UseWeapon(int Slot)
 {
-	TObjectPtr<AActor> LWeapon = WeaponSlots[Slot];
+	TObjectPtr<AWeaponBase> LWeapon = WeaponSlots[Slot];
 
 	if (LWeapon)
 	{
-		TObjectPtr<AActor> LPreviousWeapon = GetCurrentSlot();
+		TObjectPtr<AWeaponBase> LPreviousWeapon = GetCurrentSlot();
 		
 		if (LPreviousWeapon != LWeapon)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Switched to weapon %s in slot %d"), *LWeapon->GetName(), Slot);
 			LWeapon->SetOwner(Owner);
 			CurrentSlot = Slot;
+			EquipUnequipWeapon(LPreviousWeapon, LWeapon);
 		}
 	}
 }
 
-TObjectPtr<AActor> UWeaponSystem::GetCurrentSlot()
+TObjectPtr<AWeaponBase> UWeaponSystem::GetCurrentSlot()
 {
 	return CurrentSlot >= 0 ? WeaponSlots[CurrentSlot] : nullptr;
+}
+
+void UWeaponSystem::EquipUnequipWeapon(const TObjectPtr<AWeaponBase> PreviousWeaponClass, const TObjectPtr<AWeaponBase> NewWeaponClass)
+{
+	if (PreviousWeaponClass)
+	{
+		PreviousWeaponClass->UnequipItem();
+	}
+	if (NewWeaponClass)
+	{
+		NewWeaponClass->EquipItem();
+	}
 }

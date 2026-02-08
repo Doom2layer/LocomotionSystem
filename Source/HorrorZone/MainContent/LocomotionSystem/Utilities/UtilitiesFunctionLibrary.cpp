@@ -4,6 +4,7 @@
 #include "MainContent/LocomotionSystem/Utilities/UtilitiesFunctionLibrary.h"
 #include "GameFramework/HUD.h"
 #include "Kismet/GameplayStatics.h"
+#include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/UserInterfaceSystem.h"
 
 UUserInterfaceSystem* UUtilitiesFunctionLibrary::GetUserInterfaceSystem(UObject* WorldContextObject)
@@ -32,4 +33,13 @@ UUserInterfaceSystem* UUtilitiesFunctionLibrary::GetUserInterfaceSystem(UObject*
 	}
 
 	return Cast<UUserInterfaceSystem>(HUD->GetComponentByClass(UUserInterfaceSystem::StaticClass()));
+}
+
+ULocomotionSystem* UUtilitiesFunctionLibrary::GetLocomotionSystem(AActor* Owner)
+{
+	if (Owner)
+	{
+		return Cast<ULocomotionSystem>(Owner->GetComponentByClass(ULocomotionSystem::StaticClass()));
+	}
+	return nullptr;
 }

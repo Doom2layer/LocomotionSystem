@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
+#include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
 
 ALocomotionSystem_PlayerBase::ALocomotionSystem_PlayerBase()
 {
@@ -58,7 +59,6 @@ void ALocomotionSystem_PlayerBase::BeginPlay()
 	{
 		MontageHelper->GetOnMontageCompleted().AddDynamic(this, &ALocomotionSystem_PlayerBase::OnMontageCompleted);
 		MontageHelper->GetOnMontageNotifyBegin().AddDynamic(this, &ALocomotionSystem_PlayerBase::OnNotifyBegin);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Montage Helper bound to Player Base");
 	}
 }
 
@@ -71,7 +71,6 @@ void ALocomotionSystem_PlayerBase::OnNotifyBegin(FName ID, FName NotifyName)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Notify '%s' from montage with ID '%s' began."), *NotifyName.ToString(), *ID.ToString());
 }
-
 
 void ALocomotionSystem_PlayerBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -164,12 +163,6 @@ void ALocomotionSystem_PlayerBase::UJump(const FInputActionValue& Value)
 	ToggleJump(false);
 }
 
-void ALocomotionSystem_PlayerBase::TestFunc()
-{
-	MontageHelper->PlayMontage(TestMontage, 1.0f, 0.0f, NAME_None, true, "Attack");
-}
-
-
 void ALocomotionSystem_PlayerBase::SwitchRotation(const FInputActionValue& Value)
 {
 	SwitchRotationMode(true);
@@ -227,6 +220,10 @@ void ALocomotionSystem_PlayerBase::DoUncrouch()
 
 void ALocomotionSystem_PlayerBase::OnOneKeyPressed()
 {
-	LocomotionSystem->SetAnimset(FName("Pistol"));
+	WeaponSystem->UseWeapon(1);
 }
 
+void ALocomotionSystem_PlayerBase::OnTwoKeyPressed()
+{
+	WeaponSystem->UseWeapon(0);
+}

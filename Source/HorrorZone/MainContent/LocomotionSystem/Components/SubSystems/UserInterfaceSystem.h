@@ -21,6 +21,8 @@ public:
 	// Called Every Frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	FORCEINLINE UWeaponWidget* GetWeaponWidget() const { return WeaponWidget; }
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

@@ -55,9 +55,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoUncrouch();
-
-	UFUNCTION(BlueprintCallable, Category="Input")
-	void TestFunc();	
 	
 protected:
 	virtual void BeginPlay() override;
@@ -110,6 +107,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnOneKeyPressed();
 
+	UFUNCTION(BlueprintCallable)
+	void OnTwoKeyPressed();
+	
 	void Walk(const FInputActionValue& Value);
 
 	void Jog(const FInputActionValue& Value);

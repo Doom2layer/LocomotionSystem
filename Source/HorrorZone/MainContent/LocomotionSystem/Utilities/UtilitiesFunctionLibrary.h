@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "UtilitiesFunctionLibrary.generated.h"
 
+class ULocomotionSystem;
 class UUserInterfaceSystem;
 /**
  * 
@@ -18,4 +19,7 @@ class HORRORZONE_API UUtilitiesFunctionLibrary : public UBlueprintFunctionLibrar
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities", meta=(WorldContext="WorldContextObject"))
 	static UUserInterfaceSystem* GetUserInterfaceSystem(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
+	static ULocomotionSystem* GetLocomotionSystem(AActor* Owner);
 };
