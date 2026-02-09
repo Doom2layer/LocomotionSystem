@@ -6,6 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "UtilitiesFunctionLibrary.generated.h"
 
+class ALocomotionSystem_CharacterBase;
+class UMontageHelper;
 class ULocomotionSystem;
 class UUserInterfaceSystem;
 /**
@@ -22,4 +24,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
 	static ULocomotionSystem* GetLocomotionSystem(AActor* Owner);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
+	static UMontageHelper* GetMontageHelper(ALocomotionSystem_CharacterBase* Owner);
 };

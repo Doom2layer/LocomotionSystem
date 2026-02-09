@@ -94,6 +94,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* SwitchRotationAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* FireAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
@@ -137,4 +140,9 @@ protected:
 	void UJump(const FInputActionValue& Value);
 
 	void SwitchRotation(const FInputActionValue& Value);
+
+	void DFire(const FInputActionValue& Value);
+
+	void UFire(const FInputActionValue& Value);
+	
 };

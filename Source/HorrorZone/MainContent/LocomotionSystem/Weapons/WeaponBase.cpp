@@ -4,6 +4,7 @@
 #include "MainContent/LocomotionSystem/Weapons/WeaponBase.h"
 
 #include "MainContent/LocomotionSystem/Character/LocomotionSystem_PlayerBase.h"
+#include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/UserInterfaceSystem.h"
 #include "MainContent/LocomotionSystem/Utilities/UtilitiesFunctionLibrary.h"
@@ -50,6 +51,10 @@ void AWeaponBase::BeginPlay()
 	Super::BeginPlay();
 
 	OwnerCharacter = Cast<ALocomotionSystem_PlayerBase>(GetOwner());
+	MontageHelper = UUtilitiesFunctionLibrary::GetMontageHelper(OwnerCharacter);
+	SetWeaponVisibility(false);
+	MontageHelper->GetOnMontageCompleted().AddDynamic(this, &AWeaponBase::OnMontageCompletedAtOwner);
+	MontageHelper->GetOnMontageBlendOut().AddDynamic(this, &AWeaponBase::OnMontageBlendOutAtOwner);
 }
 
 void AWeaponBase::EquipItem()
@@ -58,11 +63,12 @@ void AWeaponBase::EquipItem()
 	InitializeHUD();
 	SetAnimSet();
 	AttachToCharacter();
+	PlayWeaponEquipAnimMontage();
 }
 
 void AWeaponBase::UnequipItem()
 {
-	SetWeaponVisibility(false);
+	PlayWeaponUnequipAnimMontage();
 }
 
 void AWeaponBase::InitializeHUD()
@@ -83,14 +89,87 @@ void AWeaponBase::AttachToCharacter()
 
 void AWeaponBase::SetWeaponMesh()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Setting weapon mesh for %s"), *GetName());
 	WeaponStaticMesh->SetStaticMesh(WeaponConfig.WeaponStaticMesh);
-	UE_LOG(LogTemp, Warning, TEXT("Set static mesh to %s"), *GetNameSafe(WeaponConfig.WeaponStaticMesh));
 	WeaponSkeletalMesh->SetSkeletalMesh(WeaponConfig.WeaponSkeletalMesh);
-	UE_LOG(LogTemp, Warning, TEXT("Set skeletal mesh to %s"), *GetNameSafe(WeaponConfig.WeaponSkeletalMesh));
 }
 
 void AWeaponBase::SetWeaponVisibility(bool bVisibile)
 {
 	SetActorHiddenInGame(!bVisibile);
+}
+
+void AWeaponBase::PlayWeaponEquipAnimMontage()
+{
+	if (!WeaponConfig.WeaponAnims.Equip)
+	{
+		return;
+	}
+	
+	PlayMontageOnOwner(
+		WeaponConfig.WeaponAnims.Equip,
+		0.8f,
+		0.0f,
+		NAME_None,
+		false,
+		FName("Weapon_Equip")
+	);
+}
+
+void AWeaponBase::PlayWeaponUnequipAnimMontage()
+{
+	if (!WeaponConfig.WeaponAnims.Unequip)
+	{
+		return;
+	}
+	
+	PlayMontageOnOwner(
+		WeaponConfig.WeaponAnims.Unequip,
+		0.4f,
+		0.0f,
+		NAME_None,
+		false,
+		FName("Weapon_Unequip")
+	);
+}
+
+void AWeaponBase::PlayMontageOnOwner(UAnimMontage* MontageToPlay, float PlayRate, float StartingPosition, FName StartingSection, bool ShouldStopAllMontages, FName ID)
+{
+	if (MontageHelper)
+	{
+		MontageHelper->PlayMontage(MontageToPlay, PlayRate, StartingPosition, StartingSection, ShouldStopAllMontages, ID);
+	}
+}
+
+void AWeaponBase::OnMontageCompletedAtOwner(FName AnimNotify)
+{
+
+}
+
+void AWeaponBase::OnMontageBlendOutAtOwner(FName AnimNotify)
+{
+
+	if (AnimNotify == FName("Weapon_Unequip"))
+	{
+		SetWeaponVisibility(false);
+	}
+}
+
+void AWeaponBase::Fire(bool bIsPressed)
+{
+	if (bIsPressed)
+	{
+		PerformMeleeAttack();
+	}
+}
+
+void AWeaponBase::PerformMeleeAttack()
+{
+	PlayMontageOnOwner(
+		MeleeWeaponConfigs.MeleeWeaponAnims.MeleeAttacks[0],
+		1.0f,
+		0.0f,
+		NAME_None,
+		false,
+		FName("Weapon_MeleeAttack")
+	);
 }

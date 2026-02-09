@@ -102,7 +102,10 @@ void ALocomotionSystem_PlayerBase::SetupPlayerInputComponent(UInputComponent* Pl
 		EnhancedInputComponent->BindAction(IncWeaponSlot, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::IncWeapon);
 
 		EnhancedInputComponent->BindAction(DecWeaponSlot, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::DecWeapon);
-		
+
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::DFire);
+
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &ALocomotionSystem_PlayerBase::UFire);
 	}
 	else
 	{
@@ -241,4 +244,14 @@ void ALocomotionSystem_PlayerBase::IncWeapon()
 void ALocomotionSystem_PlayerBase::DecWeapon()
 {
 	WeaponSystem->DecrementSlot();
+}
+
+void ALocomotionSystem_PlayerBase::DFire(const FInputActionValue& Value)
+{
+	ToggleFire(true);
+}
+
+void ALocomotionSystem_PlayerBase::UFire(const FInputActionValue& Value)
+{
+	ToggleFire(false);
 }

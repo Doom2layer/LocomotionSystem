@@ -38,14 +38,30 @@ void UWeaponSystem::BeginPlay()
 void UWeaponSystem::Initialize()
 {
 	WeaponSlots.Empty();
-	
+
 	if (!DefaultWeapons.IsEmpty())
 	{
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.Owner = Owner;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+        
 		for (const TSubclassOf<AWeaponBase>& WeaponClass : DefaultWeapons)
 		{
-			AddWeapon(GetWorld()->SpawnActor<AWeaponBase>(WeaponClass, SpawnParameters));
+			// Spawn deferred to allow Blueprint properties to be set
+			AWeaponBase* NewWeapon = GetWorld()->SpawnActorDeferred<AWeaponBase>(
+				WeaponClass,
+				FTransform::Identity,
+				Owner,
+				nullptr,
+				ESpawnActorCollisionHandlingMethod::AlwaysSpawn
+			);
+            
+			if (NewWeapon)
+			{
+				// This triggers OnConstruction and applies Blueprint properties
+				NewWeapon->FinishSpawning(FTransform::Identity);
+				AddWeapon(NewWeapon);
+			}
 		}
 		UseWeapon(DefaultWeaponSlot);
 	}
@@ -53,10 +69,8 @@ void UWeaponSystem::Initialize()
 
 void UWeaponSystem::AddWeapon(TObjectPtr<AWeaponBase> Weapon)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Attempting to add weapon %s"), *Weapon->GetName());
 	if (WeaponSlots.Find(Weapon) == INDEX_NONE)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Added weapon %s to slot %d"), *Weapon->GetName(), WeaponSlots.Num());
 		UseWeapon(WeaponSlots.Add(Weapon));
 	}
 }
@@ -71,7 +85,6 @@ void UWeaponSystem::UseWeapon(int Slot)
 		
 		if (LPreviousWeapon != LWeapon)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Switched to weapon %s in slot %d"), *LWeapon->GetName(), Slot);
 			LWeapon->SetOwner(Owner);
 			CurrentSlot = Slot;
 			EquipUnequipWeapon(LPreviousWeapon, LWeapon);

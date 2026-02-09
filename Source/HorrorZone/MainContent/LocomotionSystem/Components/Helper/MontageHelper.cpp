@@ -53,15 +53,25 @@ void UMontageHelper::StopMontage()
 
 void UMontageHelper::Event_PlayMontage(UAnimMontage* MontageToPlay, float PlayRate, float StartingPosition, FName StartingSection, bool ShouldStopAllMontages, FName ID)
 {
-	if (!SkeletalMeshComponent) return;
+	if (!SkeletalMeshComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SkeletalMeshComponent is null. Cannot play montage."));
+		return;
+	}
+
+	if (!MontageToPlay)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MontageToPlay is null. Cannot play montage."));
+		return;
+	}
 	CurrentMontageID = ID;
 	UPlayMontageCallbackProxy* PlayMontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(
-		SkeletalMeshComponent,
-		MontageToPlay,
-		PlayRate,
-		StartingPosition,
-		StartingSection,
-		ShouldStopAllMontages
+	 SkeletalMeshComponent,
+	 MontageToPlay,
+	 PlayRate,
+	 StartingPosition,
+	 StartingSection,
+	 ShouldStopAllMontages
 	);
 	PlayMontageCallbackProxy->OnCompleted.AddUniqueDynamic(this, &UMontageHelper::Completed);
 	PlayMontageCallbackProxy->OnInterrupted.AddUniqueDynamic(this, &UMontageHelper::Intterupted);
@@ -69,6 +79,7 @@ void UMontageHelper::Event_PlayMontage(UAnimMontage* MontageToPlay, float PlayRa
 	PlayMontageCallbackProxy->OnNotifyEnd.AddUniqueDynamic(this, &UMontageHelper::NotifyEnd);
 	PlayMontageCallbackProxy->OnBlendOut.AddUniqueDynamic(this, &UMontageHelper::BlendOut);
 }
+
 
 void UMontageHelper::Intterupted(FName NotifyName)
 {

@@ -26,6 +26,8 @@ public:
 
 	void DecrementSlot();
 	
+	TObjectPtr<AWeaponBase> GetCurrentSlot();
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -36,7 +38,6 @@ protected:
 	
 	void EquipUnequipWeapon(const TObjectPtr<AWeaponBase> PreviousWeaponClass, const TObjectPtr<AWeaponBase> NewWeaponClass);
 	
-	TObjectPtr<AWeaponBase> GetCurrentSlot();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Setup")
 	int CurrentSlot;	

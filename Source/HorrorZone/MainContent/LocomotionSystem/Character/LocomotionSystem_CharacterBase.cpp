@@ -7,6 +7,7 @@
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
+#include "MainContent/LocomotionSystem/Weapons/WeaponBase.h"
 
 // Sets default values
 ALocomotionSystem_CharacterBase::ALocomotionSystem_CharacterBase()
@@ -97,5 +98,13 @@ void ALocomotionSystem_CharacterBase::SwitchRotationMode(bool IsPressed)
 	{
 		ERotationMode NewMode = LocomotionSystem->GetRotationMode() == ERotationMode::ForwardFacing ? ERotationMode::Strafing : ERotationMode::ForwardFacing;
 		LocomotionSystem->SetRotationMode(NewMode);
+	}
+}
+
+void ALocomotionSystem_CharacterBase::ToggleFire(bool IsPressed)
+{
+	if (WeaponSystem && WeaponSystem->GetCurrentSlot())
+	{
+		WeaponSystem->GetCurrentSlot()->Fire(IsPressed);
 	}
 }
