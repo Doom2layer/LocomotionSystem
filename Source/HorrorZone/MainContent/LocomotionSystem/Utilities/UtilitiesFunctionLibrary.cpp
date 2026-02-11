@@ -8,6 +8,7 @@
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/UserInterfaceSystem.h"
+#include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
 
 UUserInterfaceSystem* UUtilitiesFunctionLibrary::GetUserInterfaceSystem(UObject* WorldContextObject)
 {
@@ -16,13 +17,13 @@ UUserInterfaceSystem* UUtilitiesFunctionLibrary::GetUserInterfaceSystem(UObject*
 		return nullptr;
 	}
 
-	UWorld* World = GEngine->GetWorldFromContextObjectChecked(WorldContextObject);
+	const UWorld* World = GEngine->GetWorldFromContextObjectChecked(WorldContextObject);
 	if (!World)
 	{
 		return nullptr;
 	}
 
-	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+	const APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
 	if (!PC)
 	{
 		return nullptr;
@@ -34,14 +35,15 @@ UUserInterfaceSystem* UUtilitiesFunctionLibrary::GetUserInterfaceSystem(UObject*
 		return nullptr;
 	}
 
-	return HUD->GetComponentByClass<UUserInterfaceSystem>();
+	if (UUserInterfaceSystem* System = HUD->GetComponentByClass<UUserInterfaceSystem>()) return System;
+	return nullptr;
 }
 
 ULocomotionSystem* UUtilitiesFunctionLibrary::GetLocomotionSystem(AActor* Owner)
 {
 	if (Owner)
 	{
-		return Owner->GetComponentByClass<ULocomotionSystem>();
+		if (ULocomotionSystem* System = Owner->GetComponentByClass<ULocomotionSystem>()) return System;
 	}
 	return nullptr;
 }
@@ -50,7 +52,29 @@ UMontageHelper* UUtilitiesFunctionLibrary::GetMontageHelper(ALocomotionSystem_Ch
 {
 	if (Owner)
 	{
-		return Owner->GetComponentByClass<UMontageHelper>();
+		if (UMontageHelper* Helper = Owner->GetComponentByClass<UMontageHelper>()) return Helper;
 	}
 	return nullptr;
+}
+
+UWeaponSystem* UUtilitiesFunctionLibrary::GetWeaponSystem(AActor* Owner)
+{
+	if (Owner)
+	{
+		if (UWeaponSystem* System = Owner->GetComponentByClass<UWeaponSystem>()) return System;
+	}
+	return nullptr;
+}
+
+bool UUtilitiesFunctionLibrary::IsPlayer(AActor* Actor)
+{
+	if (Actor)
+	{
+		if (ALocomotionSystem_CharacterBase* Character = Cast<ALocomotionSystem_CharacterBase>(Actor))
+		{
+			return Character->IsPlayerControlled();
+		}
+		return false;
+	}
+	return false;
 }

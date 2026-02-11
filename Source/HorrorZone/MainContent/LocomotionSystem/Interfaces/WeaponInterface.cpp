@@ -5,5 +5,8 @@
 
 void IWeaponInterface::Fire(bool bIsPressed)
 {
-	
+}
+
+void IWeaponInterface::MeleeAttack(FHitResult HitResult)
+{
 }

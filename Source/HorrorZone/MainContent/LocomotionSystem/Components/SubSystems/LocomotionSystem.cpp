@@ -121,15 +121,32 @@ void ULocomotionSystem::SetAnimOverride(const FName& NewAnimOverride)
 
 FS_AnimOverride_Movement ULocomotionSystem::GetCurrentOverrideStruct()
 {
+	FS_Anim_Movement CurrentMovement = GetCurrentMovementStruct();
+    
+	// Check if AnimOverrides map is empty
+	if (CurrentMovement.AnimOverrides.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AnimOverrides map is empty"));
+		return FS_AnimOverride_Movement();
+	}
 
-	FS_AnimOverride_Movement* L_AnimOverrideStruct = GetCurrentMovementStruct().AnimOverrides.Find(AnimOverride);
+	FS_AnimOverride_Movement* L_AnimOverrideStruct = CurrentMovement.AnimOverrides.Find(AnimOverride);
 
 	if (!L_AnimOverrideStruct)
 	{
-		L_AnimOverrideStruct = GetCurrentMovementStruct().AnimOverrides.Find("Default");
+		UE_LOG(LogTemp, Warning, TEXT("AnimOverride '%s' not found, trying 'Default'"), *AnimOverride.ToString());
+		L_AnimOverrideStruct = CurrentMovement.AnimOverrides.Find("Default");
+        
+		if (!L_AnimOverrideStruct)
+		{
+			UE_LOG(LogTemp, Error, TEXT("'Default' AnimOverride not found either! Returning empty struct"));
+			return FS_AnimOverride_Movement();
+		}
 	}
+
 	return *L_AnimOverrideStruct;
 }
+
 
 FS_Anim_Movement ULocomotionSystem::GetCurrentMovementStruct()
 {

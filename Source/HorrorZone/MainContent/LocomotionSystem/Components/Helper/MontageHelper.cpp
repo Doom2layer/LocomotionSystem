@@ -3,7 +3,6 @@
 
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
 
-#include "KismetAnimationLibrary.h"
 #include "PlayMontageCallbackProxy.h"
 #include "GameFramework/Character.h"
 

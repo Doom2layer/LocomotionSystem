@@ -9,6 +9,7 @@
 #include "MainContent/LocomotionSystem/Interfaces/WeaponInterface.h"
 #include "WeaponBase.generated.h"
 
+enum class EWeaponAttackBaseType : uint8;
 class UMontageHelper;
 class ALocomotionSystem_CharacterBase;
 struct FS_WeaponConfig;
@@ -22,6 +23,9 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponBase();
 
+	FORCEINLINE FS_WeaponConfig GetWeaponConfig() const { return WeaponConfig; }
+	FORCEINLINE FS_MeleeWeaponConfigs GetMeleeWeaponConfigs() const { return MeleeWeaponConfigs; }
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -33,6 +37,9 @@ public:
 	
 	// WeaponInterface
 	virtual void Fire(bool bIsPressed) override;
+	virtual void MeleeAttack(FHitResult HitResult) override;
+	
+	EWeaponAttackBaseType GetWeaponAttackBaseType() const;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -54,13 +61,22 @@ protected:
 
 	void PlayMontageOnOwner(UAnimMontage* MontageToPlay, float PlayRate, float StartingPosition, FName StartingSection, bool ShouldStopAllMontages, FName ID);
 
-	void PerformMeleeAttack();
+	void MeleeAttackCombo(TArray<TObjectPtr<UAnimMontage>> AnimMontages );
+	
+	void PerformMeleeAttack(UAnimMontage* MontageToPlay);
+
+	void MeleeSaveCombo();
+
+	void MeleeResetCombo();
 	
 	UFUNCTION()
 	void OnMontageCompletedAtOwner(FName AnimNotify);
 
 	UFUNCTION()
 	void OnMontageBlendOutAtOwner(FName AnimNotify);
+
+	UFUNCTION()
+	void OnMontageNotifyBeginAtOwner(FName AnimNotify, FName NotifyName);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Setup)
 	USceneComponent* RootSceneComponent;	
@@ -82,5 +98,17 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
 	UMontageHelper* MontageHelper;	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
+	bool bIsAttacking;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
+	bool bSaveAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
+	int ComboIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
+	TArray<TObjectPtr<UAnimMontage>> ComboMeleeAttackAnimMontages;
 	
 };

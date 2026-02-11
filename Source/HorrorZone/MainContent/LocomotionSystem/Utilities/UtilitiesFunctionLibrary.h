@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "UtilitiesFunctionLibrary.generated.h"
 
+class UWeaponSystem;
 class ALocomotionSystem_CharacterBase;
 class UMontageHelper;
 class ULocomotionSystem;
@@ -27,4 +28,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
 	static UMontageHelper* GetMontageHelper(ALocomotionSystem_CharacterBase* Owner);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
+	static UWeaponSystem* GetWeaponSystem(AActor* Owner);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
+	static bool IsPlayer(AActor* Actor);	
 };

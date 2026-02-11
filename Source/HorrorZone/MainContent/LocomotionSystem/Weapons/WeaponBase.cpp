@@ -7,6 +7,7 @@
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/UserInterfaceSystem.h"
+#include "MainContent/LocomotionSystem/Data/Weapons_Enums.h"
 #include "MainContent/LocomotionSystem/Utilities/UtilitiesFunctionLibrary.h"
 #include "MainContent/LocomotionSystem/Widget/WeaponWidget.h"
 
@@ -37,30 +38,31 @@ void AWeaponBase::OnConstruction(const FTransform& Transform)
 	SetWeaponMesh();
 }
 
-
 // Called every frame
 void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called when the game starts or when spawned
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-
 	OwnerCharacter = Cast<ALocomotionSystem_PlayerBase>(GetOwner());
 	MontageHelper = UUtilitiesFunctionLibrary::GetMontageHelper(OwnerCharacter);
 	SetWeaponVisibility(false);
 	MontageHelper->GetOnMontageCompleted().AddDynamic(this, &AWeaponBase::OnMontageCompletedAtOwner);
 	MontageHelper->GetOnMontageBlendOut().AddDynamic(this, &AWeaponBase::OnMontageBlendOutAtOwner);
+	MontageHelper->GetOnMontageNotifyBegin().AddDynamic(this, &AWeaponBase::OnMontageNotifyBeginAtOwner);
 }
 
 void AWeaponBase::EquipItem()
 {
 	SetWeaponVisibility(true);
-	InitializeHUD();
+	if (UUtilitiesFunctionLibrary::IsPlayer(GetOwner()))
+	{
+		InitializeHUD();
+	}
 	SetAnimSet();
 	AttachToCharacter();
 	PlayWeaponEquipAnimMontage();
@@ -78,7 +80,6 @@ void AWeaponBase::InitializeHUD()
 
 void AWeaponBase::SetAnimSet()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Setting animset to %s"), *WeaponConfig.AnimsetName.ToString()));
 	UUtilitiesFunctionLibrary::GetLocomotionSystem(GetOwner())->SetAnimset(WeaponConfig.AnimsetName);	
 }
 
@@ -154,22 +155,90 @@ void AWeaponBase::OnMontageBlendOutAtOwner(FName AnimNotify)
 	}
 }
 
+void AWeaponBase::OnMontageNotifyBeginAtOwner(FName AnimNotify, FName NotifyName)
+{
+	if (AnimNotify == "Weapon_MeleeAttack")
+	{
+		if (NotifyName == "MeleeResetCombo")
+		{
+			MeleeResetCombo();
+		}
+		else if (NotifyName == "MeleeSaveAttack")
+		{
+			MeleeSaveCombo();
+		}
+	}
+}
+
+void AWeaponBase::MeleeSaveCombo()
+{
+	if (bSaveAttack)
+	{
+		bSaveAttack = false;
+		ComboIndex = ComboIndex + 1 < ComboMeleeAttackAnimMontages.Num() ? ComboIndex + 1 : 0;
+		PerformMeleeAttack(ComboMeleeAttackAnimMontages[ComboIndex]);
+	}
+}
+
+void AWeaponBase::MeleeResetCombo()
+{
+	bIsAttacking = false;
+	bSaveAttack = false;
+	ComboIndex = 0;
+}
+
 void AWeaponBase::Fire(bool bIsPressed)
 {
 	if (bIsPressed)
 	{
-		PerformMeleeAttack();
+		MeleeAttackCombo(MeleeWeaponConfigs.MeleeWeaponAnims.MeleeAttacks);
 	}
 }
 
-void AWeaponBase::PerformMeleeAttack()
+void AWeaponBase::MeleeAttack(FHitResult HitResult)
 {
+
+}
+
+void AWeaponBase::MeleeAttackCombo(TArray<TObjectPtr<UAnimMontage>> AnimMontages)
+{
+	ComboMeleeAttackAnimMontages = AnimMontages;
+
+	if (!bIsAttacking)
+	{
+		bIsAttacking = true;
+		PerformMeleeAttack(ComboMeleeAttackAnimMontages[ComboIndex]);
+	}
+	else
+	{
+		bSaveAttack = true;
+	}
+}
+
+void AWeaponBase::PerformMeleeAttack(UAnimMontage* MontageToPlay)
+{
+	if (MontageToPlay == nullptr) return;
 	PlayMontageOnOwner(
-		MeleeWeaponConfigs.MeleeWeaponAnims.MeleeAttacks[0],
+		MontageToPlay,
 		1.0f,
 		0.0f,
 		NAME_None,
-		false,
+		true,
 		FName("Weapon_MeleeAttack")
 	);
 }
+
+EWeaponAttackBaseType AWeaponBase::GetWeaponAttackBaseType() const
+{
+	 if (WeaponConfig.WeaponSkeletalMesh)
+	{
+		return EWeaponAttackBaseType::WeaponSkeletalMeshBased;
+	}
+	if (WeaponConfig.WeaponStaticMesh)
+	{
+		return EWeaponAttackBaseType::WeaponStaticMeshBased;
+	}
+
+	return EWeaponAttackBaseType::CharacterSkeletonBased;
+}
+

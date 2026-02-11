@@ -22,5 +22,7 @@ class IWeaponInterface
 
 public:
 	virtual void Fire(bool bIsPressed);
+
+	virtual void MeleeAttack(FHitResult HitResult);
 	
 };
