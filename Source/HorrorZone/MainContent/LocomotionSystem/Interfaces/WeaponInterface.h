@@ -24,5 +24,8 @@ public:
 	virtual void Fire(bool bIsPressed);
 
 	virtual void MeleeAttack(FHitResult HitResult);
-	
+
+	virtual void Reload();
+
+	virtual void Melee(bool bIsPressed);
 };

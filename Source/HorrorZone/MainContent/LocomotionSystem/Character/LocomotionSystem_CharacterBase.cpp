@@ -108,3 +108,23 @@ void ALocomotionSystem_CharacterBase::ToggleFire(bool IsPressed)
 		WeaponSystem->GetCurrentSlot()->Fire(IsPressed);
 	}
 }
+
+void ALocomotionSystem_CharacterBase::Reload()
+{
+	WeaponSystem->GetCurrentSlot()->Reload();
+}
+
+void ALocomotionSystem_CharacterBase::ToggleMelee(bool IsPressed)
+{
+	if (!WeaponSystem)
+	{
+		return;
+	}
+
+	TObjectPtr<AWeaponBase> Current = WeaponSystem->GetCurrentSlot();
+	if (!Current)
+	{
+		return;
+	}
+	Current->Melee(IsPressed);
+}

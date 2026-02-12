@@ -6,9 +6,105 @@
 #include "Weapon_Structs.generated.h"
 
 enum class EWeapon : uint8;
+class UNiagaraSystem;
+
 /**
  * 
  */
+USTRUCT(BlueprintType, meta=(DisplayName="S Firearm Weapon Anims"))
+struct FS_FirearmWeaponAnims : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anims")
+	TObjectPtr<UAnimMontage> Fire = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anims")
+	TObjectPtr<UAnimMontage> Reload = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anims")
+	TObjectPtr<UAnimMontage> DryFire = nullptr;
+};
+
+USTRUCT(BlueprintType, meta=(DisplayName="S Firearm Weapon Fire Effects"))
+struct FS_FirearmWeaponFireEffects : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Effects")
+	TObjectPtr<UNiagaraSystem> TracerSystem = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Effects")
+	float ProjectileLifeSpan = 0.2f;
+};
+
+USTRUCT(BlueprintType, meta=(DisplayName="S Firearm Weapon Config"))
+struct FS_FirearmWeaponConfig : public FTableRowBase
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ammo")
+	int32 MagazineAmmo = 20;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ammo")
+	int32 MagazineSize = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ammo")
+	int32 SpareAmmo = 100;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Delay")
+	bool bShouldDelay = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Delay")
+	float DelayTime = 0.2f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Range")
+	float EffectiveRange = 10000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Accuracy")
+	float AccuracyLoss = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pellets")
+	int32 PelletCount = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pellets")
+	int32 MaxDryFireTries = 3;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Projectile Effects")
+	FS_FirearmWeaponFireEffects FireEffects = FS_FirearmWeaponFireEffects();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animations")
+	FS_FirearmWeaponAnims FirearmWeaponAnims = FS_FirearmWeaponAnims();
+
+};
+
+USTRUCT(BlueprintType, meta=(DisplayName="S Weapon Crosshair Config"))
+struct FS_WeaponCrosshairConfig : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Crosshair")
+	bool bIsEnabled;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Crosshair")
+	FLinearColor OutterBorderColor = FLinearColor::Black;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Crosshair")
+	FLinearColor InnerBorderColor = FLinearColor::White;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Crosshair")
+	float CrosshairRotation = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Crosshair")
+	float CrosshairLength = 8.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Crosshair")
+	float CrosshairThickness = 4.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Crosshair")
+	float CrosshairSpread = 3.0f;
+	
+};
+
 USTRUCT(BlueprintType, meta=(DisplayName="S Weapon Anims"))
 struct FS_WeaponAnims : public FTableRowBase
 {
@@ -83,6 +179,9 @@ struct HORRORZONE_API FS_WeaponConfig : public FTableRowBase
 	FName SocketName = "root";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Configs")
-	FS_WeaponAnims WeaponAnims = FS_WeaponAnims();	
+	FS_WeaponAnims WeaponAnims = FS_WeaponAnims();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Configs")
+	FS_WeaponCrosshairConfig CrosshairConfig = FS_WeaponCrosshairConfig();
 };
 

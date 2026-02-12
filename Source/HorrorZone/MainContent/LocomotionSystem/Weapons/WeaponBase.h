@@ -9,6 +9,7 @@
 #include "MainContent/LocomotionSystem/Interfaces/WeaponInterface.h"
 #include "WeaponBase.generated.h"
 
+class UUserInterfaceSystem;
 enum class EWeaponAttackBaseType : uint8;
 class UMontageHelper;
 class ALocomotionSystem_CharacterBase;
@@ -38,6 +39,7 @@ public:
 	// WeaponInterface
 	virtual void Fire(bool bIsPressed) override;
 	virtual void MeleeAttack(FHitResult HitResult) override;
+	virtual void Melee(bool bIsPressed) override;
 	
 	EWeaponAttackBaseType GetWeaponAttackBaseType() const;
 	
@@ -45,7 +47,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void InitializeHUD();
+	virtual void InitializeHUD();
 
 	void SetAnimSet();
 
@@ -68,15 +70,17 @@ protected:
 	void MeleeSaveCombo();
 
 	void MeleeResetCombo();
+
+	void SetCrosshair();
 	
 	UFUNCTION()
-	void OnMontageCompletedAtOwner(FName AnimNotify);
+	virtual void OnMontageCompletedAtOwner(FName AnimNotify);
 
 	UFUNCTION()
-	void OnMontageBlendOutAtOwner(FName AnimNotify);
+	virtual void OnMontageBlendOutAtOwner(FName AnimNotify);
 
 	UFUNCTION()
-	void OnMontageNotifyBeginAtOwner(FName AnimNotify, FName NotifyName);
+	virtual void OnMontageNotifyBeginAtOwner(FName AnimNotify, FName NotifyName);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Setup)
 	USceneComponent* RootSceneComponent;	
@@ -86,7 +90,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Setup)
 	FS_MeleeWeaponConfigs MeleeWeaponConfigs;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup, meta=(AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* WeaponSkeletalMesh;
 
@@ -97,7 +101,10 @@ protected:
 	ALocomotionSystem_CharacterBase* OwnerCharacter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
-	UMontageHelper* MontageHelper;	
+	UMontageHelper* MontageHelper;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
+	UUserInterfaceSystem* UserInterfaceSystem;	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
 	bool bIsAttacking;

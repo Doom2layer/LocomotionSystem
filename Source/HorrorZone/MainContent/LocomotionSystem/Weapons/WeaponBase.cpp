@@ -9,6 +9,7 @@
 #include "MainContent/LocomotionSystem/Components/SubSystems/UserInterfaceSystem.h"
 #include "MainContent/LocomotionSystem/Data/Weapons_Enums.h"
 #include "MainContent/LocomotionSystem/Utilities/UtilitiesFunctionLibrary.h"
+#include "MainContent/LocomotionSystem/Widget/Crosshair.h"
 #include "MainContent/LocomotionSystem/Widget/WeaponWidget.h"
 
 // Sets default values
@@ -48,28 +49,71 @@ void AWeaponBase::Tick(float DeltaTime)
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-	OwnerCharacter = Cast<ALocomotionSystem_PlayerBase>(GetOwner());
+
+	AActor* OwnerActor = GetOwner();
+	if (!OwnerActor)
+	{
+		UE_LOG(LogTemp, Error, TEXT("WeaponBase: Owner is null in BeginPlay for %s"), *GetName());
+		return;
+	}
+
+	// Cast to base character class instead of player-specific class
+	OwnerCharacter = Cast<ALocomotionSystem_CharacterBase>(OwnerActor);
+
+	if (!OwnerCharacter)
+	{
+		UE_LOG(LogTemp, Error, TEXT("WeaponBase: Owner is not ALocomotionSystem_CharacterBase for %s"), *GetName());
+		return;
+	}
+
 	MontageHelper = UUtilitiesFunctionLibrary::GetMontageHelper(OwnerCharacter);
+	
+	if (!MontageHelper)
+	{
+		UE_LOG(LogTemp, Error, TEXT("WeaponBase: MontageHelper is null in BeginPlay for %s"), *GetName());
+		return;
+	}
+    
+	if (UUtilitiesFunctionLibrary::IsPlayer(GetOwner()))
+	{
+		UserInterfaceSystem = UUtilitiesFunctionLibrary::GetUserInterfaceSystem(GetWorld());
+	}
+    
 	SetWeaponVisibility(false);
 	MontageHelper->GetOnMontageCompleted().AddDynamic(this, &AWeaponBase::OnMontageCompletedAtOwner);
 	MontageHelper->GetOnMontageBlendOut().AddDynamic(this, &AWeaponBase::OnMontageBlendOutAtOwner);
 	MontageHelper->GetOnMontageNotifyBegin().AddDynamic(this, &AWeaponBase::OnMontageNotifyBeginAtOwner);
 }
 
+
 void AWeaponBase::EquipItem()
 {
+	if (!OwnerCharacter)
+	{
+		OwnerCharacter = Cast<ALocomotionSystem_PlayerBase>(GetOwner());
+        
+		if (!OwnerCharacter)
+		{
+			UE_LOG(LogTemp, Error, TEXT("WeaponBase::EquipItem - Cannot equip, no valid owner for %s"), *GetName());
+			return;
+		}
+	}
+
 	SetWeaponVisibility(true);
 	if (UUtilitiesFunctionLibrary::IsPlayer(GetOwner()))
 	{
 		InitializeHUD();
+		SetCrosshair();
 	}
 	SetAnimSet();
 	AttachToCharacter();
 	PlayWeaponEquipAnimMontage();
 }
 
+
 void AWeaponBase::UnequipItem()
 {
+	SetWeaponVisibility(false);
 	PlayWeaponUnequipAnimMontage();
 }
 
@@ -85,8 +129,20 @@ void AWeaponBase::SetAnimSet()
 
 void AWeaponBase::AttachToCharacter()
 {
+	if (!OwnerCharacter)
+	{
+		OwnerCharacter = Cast<ALocomotionSystem_PlayerBase>(GetOwner());
+        
+		if (!OwnerCharacter)
+		{
+			UE_LOG(LogTemp, Error, TEXT("WeaponBase::AttachToCharacter - OwnerCharacter is null for %s"), *GetName());
+			return;
+		}
+	}
+
 	AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponConfig.SocketName);
 }
+
 
 void AWeaponBase::SetWeaponMesh()
 {
@@ -103,6 +159,7 @@ void AWeaponBase::PlayWeaponEquipAnimMontage()
 {
 	if (!WeaponConfig.WeaponAnims.Equip)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Equip montage is null for weapon: %s, skipping montage play"), *GetName());
 		return;
 	}
 	
@@ -120,6 +177,7 @@ void AWeaponBase::PlayWeaponUnequipAnimMontage()
 {
 	if (!WeaponConfig.WeaponAnims.Unequip)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Unequip montage is null for weapon: %s, skipping montage play"), *GetName());
 		return;
 	}
 	
@@ -197,7 +255,10 @@ void AWeaponBase::Fire(bool bIsPressed)
 
 void AWeaponBase::MeleeAttack(FHitResult HitResult)
 {
+}
 
+void AWeaponBase::Melee(bool bIsPressed)
+{
 }
 
 void AWeaponBase::MeleeAttackCombo(TArray<TObjectPtr<UAnimMontage>> AnimMontages)
@@ -242,3 +303,18 @@ EWeaponAttackBaseType AWeaponBase::GetWeaponAttackBaseType() const
 	return EWeaponAttackBaseType::CharacterSkeletonBased;
 }
 
+void AWeaponBase::SetCrosshair()
+{
+	UserInterfaceSystem->ToggleCrosshair(WeaponConfig.CrosshairConfig.bIsEnabled);
+	if (UserInterfaceSystem->GetCrosshairWidget()->IsVisible() && WeaponConfig.CrosshairConfig.bIsEnabled)
+	{
+		UserInterfaceSystem->GetCrosshairWidget()->SetCrosshair(
+			WeaponConfig.CrosshairConfig.OutterBorderColor,
+			WeaponConfig.CrosshairConfig.InnerBorderColor,
+			WeaponConfig.CrosshairConfig.CrosshairRotation,
+			WeaponConfig.CrosshairConfig.CrosshairLength,
+			WeaponConfig.CrosshairConfig.CrosshairThickness,
+			WeaponConfig.CrosshairConfig.CrosshairSpread
+		);
+	}
+}

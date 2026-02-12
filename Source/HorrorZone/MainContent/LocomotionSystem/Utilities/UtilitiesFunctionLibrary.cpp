@@ -78,3 +78,9 @@ bool UUtilitiesFunctionLibrary::IsPlayer(AActor* Actor)
 	}
 	return false;
 }
+
+ACharacter* UUtilitiesFunctionLibrary::GetCharacter(AActor* Actor)
+{
+	if (Actor) return Cast<ACharacter>(Actor);
+	return nullptr;
+}

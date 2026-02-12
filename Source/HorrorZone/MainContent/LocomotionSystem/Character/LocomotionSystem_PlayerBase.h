@@ -71,10 +71,16 @@ protected:
 	UInputAction* MoveAction;
 
 	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* ReloadAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* IncWeaponSlot;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* DecWeaponSlot;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* FirearmMeleeAction;
 	
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -144,5 +150,8 @@ protected:
 	void DFire(const FInputActionValue& Value);
 
 	void UFire(const FInputActionValue& Value);
-	
+
+	void DMelee(const FInputActionValue& Value);
+
+	void UMelee(const FInputActionValue& Value);
 };

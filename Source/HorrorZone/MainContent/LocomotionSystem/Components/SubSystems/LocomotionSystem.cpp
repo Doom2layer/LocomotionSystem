@@ -28,6 +28,8 @@ void ULocomotionSystem::BeginPlay()
 	
 	SetAnimset(CurrentAnimsetRowName);
 	SetMovementType(MovementType);
+	SetCharacterBaseAimRotation();
+	SetRotationMode(RotationMode);
 }
 
 
@@ -165,12 +167,9 @@ UCharacterMovementComponent* ULocomotionSystem::GetMovementComponent() const
 {
     if (!MovementComponent || !IsValid(MovementComponent))
     {
-    	UE_LOG(LogTemp, Warning, TEXT("Getting MovementComponent from OwnerActor"));
         if (OwnerActor && IsValid(OwnerActor))
         {
-        	UE_LOG(LogTemp, Warning, TEXT("OwnerActor is valid: %s"), *OwnerActor->GetName());
             const_cast<ULocomotionSystem*>(this)->MovementComponent = OwnerActor->GetCharacterMovement();
-			UE_LOG(LogTemp, Warning, TEXT("MovementComponent: %s"), *MovementComponent->GetName());
         }
     }
     return MovementComponent;

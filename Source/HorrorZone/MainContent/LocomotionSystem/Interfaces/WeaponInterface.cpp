@@ -10,3 +10,12 @@ void IWeaponInterface::Fire(bool bIsPressed)
 void IWeaponInterface::MeleeAttack(FHitResult HitResult)
 {
 }
+
+void IWeaponInterface::Reload()
+{
+}
+
+void IWeaponInterface::Melee(bool bIsPressed)
+{
+		
+}

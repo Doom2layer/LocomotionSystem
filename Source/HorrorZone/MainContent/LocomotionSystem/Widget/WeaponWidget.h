@@ -11,6 +11,7 @@ class UImage;
 class UOverlay;
 class USizeBox;
 class UCanvasPanel;
+class AWeaponBase;
 /**
  * 
  */
@@ -24,7 +25,14 @@ public:
 	void Update(UTexture2D* Icon, int Ammo, bool bShowAmmo);
 
 protected:
+	virtual void NativeConstruct() override;
 
+	UFUNCTION()
+	void OnWeaponSlotChanged(AWeaponBase* PreviousWeapon, AWeaponBase* NewWeapon);
+
+	UFUNCTION()
+	void OnAmmoChanged(int32 AmmoCount);
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta= (BindWidget))
 	UCanvasPanel* CanvasPanel;
 

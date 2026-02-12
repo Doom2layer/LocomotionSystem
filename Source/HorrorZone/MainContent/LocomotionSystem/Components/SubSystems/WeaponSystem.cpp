@@ -35,46 +35,67 @@ void UWeaponSystem::BeginPlay()
 
 void UWeaponSystem::Initialize()
 {
-	WeaponSlots.Empty();
-
-	if (!DefaultWeapons.IsEmpty())
+	AActor* OwningActor = GetOwner();
+	if (!OwningActor)
 	{
-		FActorSpawnParameters SpawnParameters;
-		SpawnParameters.Owner = Owner;
-		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-        
-		for (const TSubclassOf<AWeaponBase>& WeaponClass : DefaultWeapons)
+		UE_LOG(LogTemp, Error, TEXT("WeaponSystem::Initialize - WeaponSystem has no owner"));
+		return;
+	}
+
+	for (const auto& WeaponClass : DefaultWeapons)
+	{
+		if (WeaponClass)
 		{
-			// Spawn deferred to allow Blueprint properties to be set
-			AWeaponBase* NewWeapon = GetWorld()->SpawnActorDeferred<AWeaponBase>(
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = OwningActor; // Set owner before spawn
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			AWeaponBase* Weapon = GetWorld()->SpawnActor<AWeaponBase>(
 				WeaponClass,
-				FTransform::Identity,
-				Owner,
-				nullptr,
-				ESpawnActorCollisionHandlingMethod::AlwaysSpawn
+				FVector::ZeroVector,
+				FRotator::ZeroRotator,
+				SpawnParams
 			);
-            
-			if (NewWeapon)
+
+			if (Weapon)
 			{
-				// This triggers OnConstruction and applies Blueprint properties
-				NewWeapon->FinishSpawning(FTransform::Identity);
-				AddWeapon(NewWeapon);
+				// Double-check owner is set
+				if (Weapon->GetOwner() == nullptr)
+				{
+					Weapon->SetOwner(OwningActor);
+				}
+
+				AddWeapon(Weapon);
 			}
 		}
-		UseWeapon(DefaultWeaponSlot);
 	}
 }
 
+
 void UWeaponSystem::AddWeapon(TObjectPtr<AWeaponBase> Weapon)
 {
+	if (!Weapon) return;
+
+	// Ensure weapon has correct owner
+	if (Weapon->GetOwner() != GetOwner())
+	{
+		Weapon->SetOwner(GetOwner());
+	}
+
 	if (WeaponSlots.Find(Weapon) == INDEX_NONE)
 	{
-		UseWeapon(WeaponSlots.Add(Weapon));
+		int NewSlot = WeaponSlots.Add(Weapon);
+		UseWeapon(NewSlot);
 	}
 }
 
 void UWeaponSystem::UseWeapon(int Slot)
 {
+	if (!WeaponSlots.IsValidIndex(Slot))
+	{
+		return;
+	}
+
 	TObjectPtr<AWeaponBase> LWeapon = WeaponSlots[Slot];
 
 	if (LWeapon)
@@ -92,7 +113,11 @@ void UWeaponSystem::UseWeapon(int Slot)
 
 TObjectPtr<AWeaponBase> UWeaponSystem::GetCurrentSlot()
 {
-	return CurrentSlot >= 0 ? WeaponSlots[CurrentSlot] : nullptr;
+	if (CurrentSlot >= 0 && CurrentSlot < WeaponSlots.Num() && WeaponSlots.IsValidIndex(CurrentSlot))
+	{
+		return WeaponSlots[CurrentSlot];
+	}
+	return nullptr;
 }
 
 void UWeaponSystem::EquipUnequipWeapon(const TObjectPtr<AWeaponBase> PreviousWeaponClass, const TObjectPtr<AWeaponBase> NewWeaponClass)
@@ -105,6 +130,7 @@ void UWeaponSystem::EquipUnequipWeapon(const TObjectPtr<AWeaponBase> PreviousWea
 	{
 		NewWeaponClass->EquipItem();
 	}
+	OnWeaponSlotChangedDelegate.Broadcast(PreviousWeaponClass, NewWeaponClass);
 }
 
 void UWeaponSystem::IncrementSlot()

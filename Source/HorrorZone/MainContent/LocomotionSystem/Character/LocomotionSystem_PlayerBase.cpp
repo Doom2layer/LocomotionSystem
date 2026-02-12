@@ -106,6 +106,12 @@ void ALocomotionSystem_PlayerBase::SetupPlayerInputComponent(UInputComponent* Pl
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::DFire);
 
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &ALocomotionSystem_PlayerBase::UFire);
+
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &ALocomotionSystem_PlayerBase::Reload);
+
+		EnhancedInputComponent->BindAction(FirearmMeleeAction, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::DMelee);
+
+		EnhancedInputComponent->BindAction(FirearmMeleeAction, ETriggerEvent::Completed, this, &ALocomotionSystem_PlayerBase::UMelee);
 	}
 	else
 	{
@@ -254,4 +260,14 @@ void ALocomotionSystem_PlayerBase::DFire(const FInputActionValue& Value)
 void ALocomotionSystem_PlayerBase::UFire(const FInputActionValue& Value)
 {
 	ToggleFire(false);
+}
+
+void ALocomotionSystem_PlayerBase::DMelee(const FInputActionValue& Value)
+{
+	ToggleMelee(true);
+}
+
+void ALocomotionSystem_PlayerBase::UMelee(const FInputActionValue& Value)
+{
+	ToggleMelee(false);
 }

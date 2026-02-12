@@ -7,7 +7,7 @@
 #include "WeaponSystem.generated.h"
 
 class AWeaponBase;
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnWeaponSlotChanged, AWeaponBase*, PreviousWeapon, AWeaponBase*, NewWeapon);
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HORRORZONE_API UWeaponSystem : public UActorComponent
 {
@@ -17,6 +17,8 @@ public:
 	// Sets default values for this component's properties
 	UWeaponSystem();
 
+	FORCEINLINE FOnWeaponSlotChanged& GetOnWeaponSlotChangedDelegate(){return OnWeaponSlotChangedDelegate;}
+	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -30,6 +32,8 @@ public:
 	
 protected:
 	// Called when the game starts
+	//Functions
+	
 	virtual void BeginPlay() override;
 
 	void Initialize();
@@ -37,13 +41,17 @@ protected:
 	void AddWeapon(TObjectPtr<AWeaponBase> Weapon);
 	
 	void EquipUnequipWeapon(const TObjectPtr<AWeaponBase> PreviousWeaponClass, const TObjectPtr<AWeaponBase> NewWeaponClass);
+
+	// Delegates
+	FOnWeaponSlotChanged OnWeaponSlotChangedDelegate;
+
+	// Variables 
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Setup")
+	int CurrentSlot = -1;	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Setup")
-	int CurrentSlot;	
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Setup")
-	int DefaultWeaponSlot;
+	int DefaultWeaponSlot = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Setup")
 	TArray<TSubclassOf<AWeaponBase>> DefaultWeapons;

@@ -43,6 +43,10 @@ protected:
 
 	virtual void ToggleFire(bool IsPressed);
 
+	virtual void ToggleMelee(bool IsPressed);
+
+	virtual void Reload();
+
 	virtual void SwitchRotationMode(bool IsPressed);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))

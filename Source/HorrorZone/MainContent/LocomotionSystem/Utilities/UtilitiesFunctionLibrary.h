@@ -33,5 +33,8 @@ public:
 	static UWeaponSystem* GetWeaponSystem(AActor* Owner);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
-	static bool IsPlayer(AActor* Actor);	
+	static bool IsPlayer(AActor* Actor);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
+	static ACharacter* GetCharacter(AActor* Actor);	
 };

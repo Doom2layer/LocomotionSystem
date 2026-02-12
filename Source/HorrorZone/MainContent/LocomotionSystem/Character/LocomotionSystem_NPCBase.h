@@ -13,5 +13,10 @@ UCLASS()
 class HORRORZONE_API ALocomotionSystem_NPCBase : public ALocomotionSystem_CharacterBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void Tick(float DeltaTime) override;
+
+protected:
+	virtual void BeginPlay() override;
 };
