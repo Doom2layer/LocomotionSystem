@@ -9,7 +9,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
-#include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
 
 ALocomotionSystem_PlayerBase::ALocomotionSystem_PlayerBase()
@@ -49,7 +48,6 @@ ALocomotionSystem_PlayerBase::ALocomotionSystem_PlayerBase()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
-
 }
 
 void ALocomotionSystem_PlayerBase::BeginPlay()
@@ -112,6 +110,12 @@ void ALocomotionSystem_PlayerBase::SetupPlayerInputComponent(UInputComponent* Pl
 		EnhancedInputComponent->BindAction(FirearmMeleeAction, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::DMelee);
 
 		EnhancedInputComponent->BindAction(FirearmMeleeAction, ETriggerEvent::Completed, this, &ALocomotionSystem_PlayerBase::UMelee);
+		
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::DAim);
+		
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ALocomotionSystem_PlayerBase::UAim);
+		
+		
 	}
 	else
 	{
@@ -159,6 +163,7 @@ void ALocomotionSystem_PlayerBase::UCrouch(const FInputActionValue& Value)
 
 void ALocomotionSystem_PlayerBase::Sprint(const FInputActionValue& Value)
 {
+	
 	ToggleSprint(true);
 }
 
@@ -270,4 +275,14 @@ void ALocomotionSystem_PlayerBase::DMelee(const FInputActionValue& Value)
 void ALocomotionSystem_PlayerBase::UMelee(const FInputActionValue& Value)
 {
 	ToggleMelee(false);
+}
+
+void ALocomotionSystem_PlayerBase::DAim(const FInputActionValue& Value)
+{
+	ToggleAim(true);
+}
+
+void ALocomotionSystem_PlayerBase::UAim(const FInputActionValue& Value)
+{
+	ToggleAim(false);
 }

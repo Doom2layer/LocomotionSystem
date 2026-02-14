@@ -17,5 +17,8 @@ void IWeaponInterface::Reload()
 
 void IWeaponInterface::Melee(bool bIsPressed)
 {
-		
+}
+
+void IWeaponInterface::Aim(bool bIsPressed)
+{
 }

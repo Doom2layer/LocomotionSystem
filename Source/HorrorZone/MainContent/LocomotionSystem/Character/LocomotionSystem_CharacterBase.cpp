@@ -64,16 +64,17 @@ void ALocomotionSystem_CharacterBase::ToggleCrouch(bool IsPressed)
 
 void ALocomotionSystem_CharacterBase::ToggleSprint(bool IsPressed)
 {
-	if (!LocomotionSystem) return;
+	if (!WeaponSystem)
+	{
+		return;
+	}
 
-	if (IsPressed)
+	TObjectPtr<AWeaponBase> Current = WeaponSystem->GetCurrentSlot();
+	if (!Current)
 	{
-		LocomotionSystem->SetSprint(true);
+		return;
 	}
-	else
-	{
-		LocomotionSystem->SetSprint(false);
-	}
+	Current->Sprint(IsPressed);
 }
 
 void ALocomotionSystem_CharacterBase::ToggleJump(bool IsPressed)
@@ -103,15 +104,32 @@ void ALocomotionSystem_CharacterBase::SwitchRotationMode(bool IsPressed)
 
 void ALocomotionSystem_CharacterBase::ToggleFire(bool IsPressed)
 {
-	if (WeaponSystem && WeaponSystem->GetCurrentSlot())
+	if (!WeaponSystem)
 	{
-		WeaponSystem->GetCurrentSlot()->Fire(IsPressed);
+		return;
 	}
+
+	TObjectPtr<AWeaponBase> Current = WeaponSystem->GetCurrentSlot();
+	if (!Current)
+	{
+		return;
+	}
+	Current->Fire(IsPressed);
 }
 
 void ALocomotionSystem_CharacterBase::Reload()
 {
-	WeaponSystem->GetCurrentSlot()->Reload();
+	if (!WeaponSystem)
+	{
+		return;
+	}
+
+	TObjectPtr<AWeaponBase> Current = WeaponSystem->GetCurrentSlot();
+	if (!Current)
+	{
+		return;
+	}
+	Current->Reload();
 }
 
 void ALocomotionSystem_CharacterBase::ToggleMelee(bool IsPressed)
@@ -127,4 +145,19 @@ void ALocomotionSystem_CharacterBase::ToggleMelee(bool IsPressed)
 		return;
 	}
 	Current->Melee(IsPressed);
+}
+
+void ALocomotionSystem_CharacterBase::ToggleAim(bool IsPressed)
+{
+	if (!WeaponSystem)
+	{
+		return;
+	}
+
+	TObjectPtr<AWeaponBase> Current = WeaponSystem->GetCurrentSlot();
+	if (!Current)
+	{
+		return;
+	}
+	Current->Aim(IsPressed);
 }

@@ -6,9 +6,12 @@
 #include "GameFramework/Actor.h"
 #include "MainContent/LocomotionSystem/Data/Weapon_Structs.h"
 #include "MainContent/LocomotionSystem/Interfaces/InventoryItemInterface.h"
+#include "MainContent/LocomotionSystem/Interfaces/LocomotionInterface.h"
 #include "MainContent/LocomotionSystem/Interfaces/WeaponInterface.h"
 #include "WeaponBase.generated.h"
 
+enum class ERotationMode : uint8;
+class ULocomotionSystem;
 class UUserInterfaceSystem;
 enum class EWeaponAttackBaseType : uint8;
 class UMontageHelper;
@@ -16,7 +19,7 @@ class ALocomotionSystem_CharacterBase;
 struct FS_WeaponConfig;
 
 UCLASS()
-class HORRORZONE_API AWeaponBase : public AActor, public IInventoryItemInterface, public IWeaponInterface
+class HORRORZONE_API AWeaponBase : public AActor, public IInventoryItemInterface, public IWeaponInterface, public ILocomotionInterface
 {
 	GENERATED_BODY()
 	
@@ -40,6 +43,10 @@ public:
 	virtual void Fire(bool bIsPressed) override;
 	virtual void MeleeAttack(FHitResult HitResult) override;
 	virtual void Melee(bool bIsPressed) override;
+	virtual void Aim(bool bIsPressed) override;
+	
+	// LocomotionInterface
+	virtual void Sprint(bool bIsPressed) override;
 	
 	EWeaponAttackBaseType GetWeaponAttackBaseType() const;
 	
@@ -72,6 +79,10 @@ protected:
 	void MeleeResetCombo();
 
 	void SetCrosshair();
+	
+	void UpdateCamera();
+	
+	bool CanAim();
 	
 	UFUNCTION()
 	virtual void OnMontageCompletedAtOwner(FName AnimNotify);
@@ -110,6 +121,12 @@ protected:
 	bool bIsAttacking;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
+	bool bIsSprinting;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
+	bool bIsAiming;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
 	bool bSaveAttack;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
@@ -117,5 +134,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
 	TArray<TObjectPtr<UAnimMontage>> ComboMeleeAttackAnimMontages;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
+	TObjectPtr<ULocomotionSystem> LocomotionSystem = nullptr;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Rotation")
+	ERotationMode CachedRotationMode;
 };

@@ -5,6 +5,12 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "InputMappingContext.h"
+#include "MainContent/LocomotionSystem/Camera/HZ_CameraManager.h"
+
+ALocomotionSystem_PC::ALocomotionSystem_PC()
+{
+	PlayerCameraManagerClass = AHZ_CameraManager::StaticClass();	
+}
 
 void ALocomotionSystem_PC::BeginPlay()
 {

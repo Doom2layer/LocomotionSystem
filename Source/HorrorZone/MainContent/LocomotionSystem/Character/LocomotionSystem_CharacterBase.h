@@ -45,6 +45,8 @@ protected:
 
 	virtual void ToggleMelee(bool IsPressed);
 
+	virtual void ToggleAim(bool IsPressed);
+	
 	virtual void Reload();
 
 	virtual void SwitchRotationMode(bool IsPressed);

@@ -31,7 +31,6 @@ void AFirearmBase::Fire(bool bIsPressed)
 	bIsFiring = bIsPressed;
 	if (bIsFiring && CanFire())
 	{
-		ULocomotionSystem* LocomotionSystem = OwnerCharacter->GetLocomotionSystem();
 		if (!LocomotionSystem)
 		{
 			UE_LOG(LogTemp, Error, TEXT("FirearmBase::Fire - LocomotionSystem is null for %s"), *GetName());
@@ -47,7 +46,6 @@ void AFirearmBase::Fire(bool bIsPressed)
 		StopFire();
 		if (OwnerCharacter)
 		{
-			ULocomotionSystem* LocomotionSystem = OwnerCharacter->GetLocomotionSystem();
 			if (LocomotionSystem)
 			{
 				LocomotionSystem->SetRotationMode(CachedRotationMode);
@@ -376,3 +374,4 @@ FVector AFirearmBase::GetAITargetLocation()
 	}
 	return FVector::ZeroVector;
 }
+

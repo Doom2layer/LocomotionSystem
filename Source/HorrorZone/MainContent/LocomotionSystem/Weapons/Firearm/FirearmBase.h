@@ -96,6 +96,4 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Firing")
 	bool bIsFiring;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Rotation")
-	ERotationMode CachedRotationMode;
 };

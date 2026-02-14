@@ -66,21 +66,31 @@ UWeaponSystem* UUtilitiesFunctionLibrary::GetWeaponSystem(AActor* Owner)
 	return nullptr;
 }
 
-bool UUtilitiesFunctionLibrary::IsPlayer(AActor* Actor)
-{
-	if (Actor)
-	{
-		if (ALocomotionSystem_CharacterBase* Character = Cast<ALocomotionSystem_CharacterBase>(Actor))
-		{
-			return Character->IsPlayerControlled();
-		}
-		return false;
-	}
-	return false;
-}
 
 ACharacter* UUtilitiesFunctionLibrary::GetCharacter(AActor* Actor)
 {
 	if (Actor) return Cast<ACharacter>(Actor);
 	return nullptr;
+}
+
+APlayerCameraManager* UUtilitiesFunctionLibrary::GetCameraManager(UObject* WorldContextObject)
+{
+	if (!WorldContextObject)
+	{
+		return nullptr;
+	}
+
+	const UWorld* World = GEngine->GetWorldFromContextObjectChecked(WorldContextObject);
+	if (!World)
+	{
+		return nullptr;
+	}
+
+	const APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+	if (!PC)
+	{
+		return nullptr;
+	}
+
+	return PC->PlayerCameraManager;
 }

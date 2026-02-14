@@ -105,6 +105,9 @@ protected:
 	UInputAction* FireAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* AimAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 
 	UPROPERTY(EditAnywhere, Category="Animation")
@@ -154,4 +157,8 @@ protected:
 	void DMelee(const FInputActionValue& Value);
 
 	void UMelee(const FInputActionValue& Value);
+	
+	void DAim(const FInputActionValue& Value);
+	
+	void UAim(const FInputActionValue& Value);
 };

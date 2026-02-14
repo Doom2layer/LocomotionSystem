@@ -3,14 +3,31 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CameraSettings_Struct.h"
 #include "Weapon_Structs.generated.h"
 
+enum class ECameraState : uint8;
 enum class EWeapon : uint8;
 class UNiagaraSystem;
 
 /**
  * 
  */
+USTRUCT(BlueprintType, meta=(DisplayName="S Weapon Camera Config"))
+struct FS_WeaponCameraConfig : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anims")
+	bool EnableAiming = false;
+		
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anims")
+	ECameraState DefaultCameraState = ECameraState::MediumCamera;	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anims")
+	ECameraState CameraState = ECameraState::AimingCloseCamera;
+};
+
 USTRUCT(BlueprintType, meta=(DisplayName="S Firearm Weapon Anims"))
 struct FS_FirearmWeaponAnims : public FTableRowBase
 {
@@ -183,5 +200,8 @@ struct HORRORZONE_API FS_WeaponConfig : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Configs")
 	FS_WeaponCrosshairConfig CrosshairConfig = FS_WeaponCrosshairConfig();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Configs")
+	FS_WeaponCameraConfig CameraConfig = FS_WeaponCameraConfig();
 };
 

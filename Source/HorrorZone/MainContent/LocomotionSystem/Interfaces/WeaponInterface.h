@@ -28,4 +28,6 @@ public:
 	virtual void Reload();
 
 	virtual void Melee(bool bIsPressed);
+	
+	virtual void Aim(bool bIsPressed);
 };

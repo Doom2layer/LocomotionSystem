@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "MainContent/LocomotionSystem/Character/LocomotionSystem_CharacterBase.h"
 #include "UtilitiesFunctionLibrary.generated.h"
 
 class UWeaponSystem;
@@ -22,7 +23,10 @@ class HORRORZONE_API UUtilitiesFunctionLibrary : public UBlueprintFunctionLibrar
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities", meta=(WorldContext="WorldContextObject"))
 	static UUserInterfaceSystem* GetUserInterfaceSystem(UObject* WorldContextObject);
-
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities", meta=(WorldContext="WorldContextObject"))
+	static APlayerCameraManager* GetCameraManager(UObject* WorldContextObject);
+	
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
 	static ULocomotionSystem* GetLocomotionSystem(AActor* Owner);
 
@@ -31,10 +35,20 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
 	static UWeaponSystem* GetWeaponSystem(AActor* Owner);
-
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
-	static bool IsPlayer(AActor* Actor);
-
+	
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
 	static ACharacter* GetCharacter(AActor* Actor);	
+	
+	template<typename T>
+	static bool IsPlayer(T* Actor)
+	{
+		if (Actor)
+		{
+			if (ALocomotionSystem_CharacterBase* Character = Cast<ALocomotionSystem_CharacterBase>(Actor))
+			{
+				return Character->IsPlayerControlled();
+			}
+		}
+		return false;
+	}
 };

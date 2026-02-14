@@ -14,7 +14,8 @@ UCLASS()
 class HORRORZONE_API ALocomotionSystem_PC : public APlayerController
 {
 	GENERATED_BODY()
-
+	ALocomotionSystem_PC();
+	
 protected:
 
 	/** Input Mapping Contexts */

@@ -3,6 +3,7 @@
 
 #include "MainContent/LocomotionSystem/Weapons/WeaponBase.h"
 
+#include "MainContent/LocomotionSystem/Camera/HZ_CameraManager.h"
 #include "MainContent/LocomotionSystem/Character/LocomotionSystem_PlayerBase.h"
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
@@ -79,6 +80,8 @@ void AWeaponBase::BeginPlay()
 		UserInterfaceSystem = UUtilitiesFunctionLibrary::GetUserInterfaceSystem(GetWorld());
 	}
     
+	LocomotionSystem = UUtilitiesFunctionLibrary::GetLocomotionSystem(GetOwner());
+	
 	SetWeaponVisibility(false);
 	MontageHelper->GetOnMontageCompleted().AddDynamic(this, &AWeaponBase::OnMontageCompletedAtOwner);
 	MontageHelper->GetOnMontageBlendOut().AddDynamic(this, &AWeaponBase::OnMontageBlendOutAtOwner);
@@ -104,12 +107,12 @@ void AWeaponBase::EquipItem()
 	{
 		InitializeHUD();
 		SetCrosshair();
+		UpdateCamera();
 	}
 	SetAnimSet();
 	AttachToCharacter();
 	PlayWeaponEquipAnimMontage();
 }
-
 
 void AWeaponBase::UnequipItem()
 {
@@ -317,4 +320,51 @@ void AWeaponBase::SetCrosshair()
 			WeaponConfig.CrosshairConfig.CrosshairSpread
 		);
 	}
+}
+
+void AWeaponBase::UpdateCamera()
+{
+	Cast<AHZ_CameraManager>(UUtilitiesFunctionLibrary::GetCameraManager(GetWorld()))->UpdateCameraSettings(WeaponConfig.CameraConfig.DefaultCameraState);
+}
+
+void AWeaponBase::Sprint(bool bIsPressed)
+{
+	bIsSprinting = bIsPressed;
+	if (LocomotionSystem)
+	{
+		LocomotionSystem->SetSprint(bIsSprinting);
+		Cast<AHZ_CameraManager>(UUtilitiesFunctionLibrary::GetCameraManager(GetWorld()))->UpdateCameraSettings(bIsSprinting ? ECameraState::SprintCamera : WeaponConfig.CameraConfig.DefaultCameraState);
+	}
+}
+
+void AWeaponBase::Aim(bool bIsPressed)
+{
+	bIsAiming = bIsPressed;
+	if (LocomotionSystem)
+	{
+		if (CanAim())
+		{
+			Cast<AHZ_CameraManager>(UUtilitiesFunctionLibrary::GetCameraManager(GetWorld()))->UpdateCameraSettings(bIsAiming ? WeaponConfig.CameraConfig.CameraState : WeaponConfig.CameraConfig.DefaultCameraState);
+			if (bIsAiming)
+			{
+				CachedRotationMode = LocomotionSystem->GetRotationMode();
+				LocomotionSystem->SetRotationMode(ERotationMode::Strafing);
+			}
+			else
+			{
+				if (OwnerCharacter)
+				{
+					if (LocomotionSystem)
+					{
+						LocomotionSystem->SetRotationMode(CachedRotationMode);
+					}
+				}
+			}
+		}
+	}
+}
+
+bool AWeaponBase::CanAim()
+{
+	return !bIsSprinting && WeaponConfig.CameraConfig.EnableAiming;
 }
