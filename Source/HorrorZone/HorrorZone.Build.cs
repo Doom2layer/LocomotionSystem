@@ -30,19 +30,6 @@ public class HorrorZone : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			"HorrorZone",
-			"HorrorZone/Variant_Platforming",
-			"HorrorZone/Variant_Platforming/Animation",
-			"HorrorZone/Variant_Combat",
-			"HorrorZone/Variant_Combat/AI",
-			"HorrorZone/Variant_Combat/Animation",
-			"HorrorZone/Variant_Combat/Gameplay",
-			"HorrorZone/Variant_Combat/Interfaces",
-			"HorrorZone/Variant_Combat/UI",
-			"HorrorZone/Variant_SideScrolling",
-			"HorrorZone/Variant_SideScrolling/AI",
-			"HorrorZone/Variant_SideScrolling/Gameplay",
-			"HorrorZone/Variant_SideScrolling/Interfaces",
-			"HorrorZone/Variant_SideScrolling/UI"
 		});
 
 		// Uncomment if you are using Slate UI

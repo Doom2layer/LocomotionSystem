@@ -2,8 +2,13 @@
 
 
 #include "MainContent/LocomotionSystem/Components/SubSystems/UserInterfaceSystem.h"
+
+#include "ActorProfileSystem.h"
 #include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "MainContent/LocomotionSystem/Utilities/UtilitiesFunctionLibrary.h"
 #include "MainContent/LocomotionSystem/Widget/Crosshair.h"
+#include "MainContent/LocomotionSystem/Widget/LSHUD.h"
 #include "MainContent/LocomotionSystem/Widget/WeaponWidget.h"
 
 // Sets default values for this component's properties
@@ -28,10 +33,10 @@ void UUserInterfaceSystem::TickComponent(float DeltaTime, ELevelTick TickType, F
 void UUserInterfaceSystem::BeginPlay()
 {
 	Super::BeginPlay();
-
-	CreateWeaponWidget();
-	CreateCrosshairWidget();
 	
+	ToggleWeaponWidget(true);
+	ToggleHUD(true);
+	ToggleCrosshair(true);
 }
 
 void UUserInterfaceSystem::CreateWeaponWidget()
@@ -43,9 +48,9 @@ void UUserInterfaceSystem::CreateWeaponWidget()
 
 	FString Path = "/Game/LocomotionSystem/Widget/WBP_Weapon.WBP_Weapon_C";
 
-	auto WeaponClass = LoadClass<UUserWidget>(nullptr, *Path);
+	auto Class = LoadClass<UUserWidget>(nullptr, *Path);
 
-	WeaponWidget = CreateWidget<UWeaponWidget>(GetWorld(), WeaponClass);
+	WeaponWidget = CreateWidget<UWeaponWidget>(GetWorld(), Class);
 
 	if (WeaponWidget)
 	{
@@ -62,9 +67,9 @@ void UUserInterfaceSystem::CreateCrosshairWidget()
 	
 	FString Path = "/Game/LocomotionSystem/Widget/WBP_Crosshair.WBP_Crosshair_C";
 
-	auto CrosshairClass = LoadClass<UUserWidget>(nullptr, *Path);
+	auto Class = LoadClass<UUserWidget>(nullptr, *Path);
 
-	CrosshairWidget = CreateWidget<UCrosshair>(GetWorld(), CrosshairClass);
+	CrosshairWidget = CreateWidget<UCrosshair>(GetWorld(), Class);
 
 	if (CrosshairWidget)
 	{
@@ -72,18 +77,26 @@ void UUserInterfaceSystem::CreateCrosshairWidget()
 	}
 }
 
-void UUserInterfaceSystem::ToggleCrosshair(bool bIsVisible)
+void UUserInterfaceSystem::CreateHUDWidget()
 {
-	if (ToggleWidgetVisibility(CrosshairWidget, bIsVisible))
+	if (HUDWidget)
 	{
-		
+		HUDWidget->RemoveFromParent();
 	}
-	else
+	
+	FString Path = "/Game/LocomotionSystem/Widget/WBP_HUD.WBP_HUD_C";
+
+	auto Class = LoadClass<UUserWidget>(nullptr, *Path);
+
+	HUDWidget = CreateWidget<ULSHUD>(GetWorld(), Class);
+
+	if (HUDWidget)
 	{
-		CreateCrosshairWidget();
+		HUDWidget->AddToViewport();
+		HUDWidget->SetOwner(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+		HUDWidget->OnHealthChanged(UUtilitiesFunctionLibrary::GetActorProfileSystem(UGameplayStatics::GetPlayerPawn(GetWorld(), 0))->GetMaxHealth());
 	}
 }
-
 
 bool UUserInterfaceSystem::ToggleWidgetVisibility(UUserWidget* Widget, bool bIsVisible)
 {
@@ -93,4 +106,28 @@ bool UUserInterfaceSystem::ToggleWidgetVisibility(UUserWidget* Widget, bool bIsV
 		return true; // Valid path
 	}
 	return false; // Invalid path
+}
+
+void UUserInterfaceSystem::ToggleCrosshair(bool bIsVisible)
+{
+	if (!ToggleWidgetVisibility(CrosshairWidget, bIsVisible))
+	{
+		CreateCrosshairWidget();
+	}
+}
+
+void UUserInterfaceSystem::ToggleHUD(bool bIsVisible)
+{
+	if (!ToggleWidgetVisibility(HUDWidget, bIsVisible))
+	{
+		CreateHUDWidget();
+	}
+}
+
+void UUserInterfaceSystem::ToggleWeaponWidget(bool bIsVisible)
+{
+	if (!ToggleWidgetVisibility(WeaponWidget, bIsVisible))
+	{
+		CreateWeaponWidget();
+	}
 }

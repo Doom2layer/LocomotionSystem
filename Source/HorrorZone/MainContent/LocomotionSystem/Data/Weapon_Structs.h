@@ -13,6 +13,19 @@ class UNiagaraSystem;
 /**
  * 
  */
+USTRUCT(BlueprintType, meta=(DisplayName="S Weapon Damage Config"))
+struct FS_WeaponDamageConfig : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anims")
+	float Damage = 1.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Anims")
+	TSubclassOf<UDamageType> DamageType = UDamageType::StaticClass();	
+	
+};
+
 USTRUCT(BlueprintType, meta=(DisplayName="S Weapon Camera Config"))
 struct FS_WeaponCameraConfig : public FTableRowBase
 {
@@ -203,5 +216,8 @@ struct HORRORZONE_API FS_WeaponConfig : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Configs")
 	FS_WeaponCameraConfig CameraConfig = FS_WeaponCameraConfig();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Configs")
+	FS_WeaponDamageConfig DamageConfig = FS_WeaponDamageConfig();
 };
 

@@ -9,6 +9,7 @@
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/UserInterfaceSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
+#include "MainContent/LocomotionSystem/Components/SubSystems/ActorProfileSystem.h"
 
 UUserInterfaceSystem* UUtilitiesFunctionLibrary::GetUserInterfaceSystem(UObject* WorldContextObject)
 {
@@ -93,4 +94,13 @@ APlayerCameraManager* UUtilitiesFunctionLibrary::GetCameraManager(UObject* World
 	}
 
 	return PC->PlayerCameraManager;
+}
+
+UActorProfileSystem* UUtilitiesFunctionLibrary::GetActorProfileSystem(AActor* Owner)
+{
+	if (Owner)
+	{
+		if (UActorProfileSystem* System = Owner->GetComponentByClass<UActorProfileSystem>()) return System;
+	}
+	return nullptr;
 }

@@ -7,6 +7,7 @@
 #include "UserInterfaceSystem.generated.h"
 
 
+class ULSHUD;
 class UCrosshair;
 class UWeaponWidget;
 
@@ -27,6 +28,10 @@ public:
 
 	void ToggleCrosshair(bool bIsVisible);
 	
+	void ToggleWeaponWidget(bool bIsVisible);
+	
+	void ToggleHUD(bool bIsVisible);
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -35,11 +40,16 @@ protected:
 
 	void CreateCrosshairWidget();
 
+	void CreateHUDWidget();
+	
 	bool ToggleWidgetVisibility(UUserWidget* Widget, bool bIsVisible);
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Widget Reference", meta = (AllowPrivateAccess = "true"))
-	UWeaponWidget* WeaponWidget;
+	TObjectPtr<UWeaponWidget> WeaponWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Widget Reference", meta = (AllowPrivateAccess = "true"))
-	UCrosshair* CrosshairWidget;
+	TObjectPtr<UCrosshair> CrosshairWidget;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Widget Reference", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<ULSHUD> HUDWidget;
 };

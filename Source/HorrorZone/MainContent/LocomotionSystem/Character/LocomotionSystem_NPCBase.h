@@ -14,6 +14,8 @@ class HORRORZONE_API ALocomotionSystem_NPCBase : public ALocomotionSystem_Charac
 {
 	GENERATED_BODY()
 
+	ALocomotionSystem_NPCBase();
+	
 public:
 	virtual void Tick(float DeltaTime) override;
 

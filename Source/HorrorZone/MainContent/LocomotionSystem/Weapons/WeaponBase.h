@@ -84,6 +84,8 @@ protected:
 	
 	bool CanAim();
 	
+	virtual void ApplyDamage(float Damage, const FHitResult& HitResult, TSubclassOf<UDamageType> DamageTypeClass);
+	
 	UFUNCTION()
 	virtual void OnMontageCompletedAtOwner(FName AnimNotify);
 

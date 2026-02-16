@@ -5,6 +5,7 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
+#include "MainContent/LocomotionSystem/Components/SubSystems/ActorProfileSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/LocomotionSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
 #include "MainContent/LocomotionSystem/Weapons/WeaponBase.h"
@@ -17,6 +18,7 @@ ALocomotionSystem_CharacterBase::ALocomotionSystem_CharacterBase()
 	LocomotionSystem = CreateDefaultSubobject<ULocomotionSystem>(TEXT("Locomotion System"));
 	MontageHelper = CreateDefaultSubobject<UMontageHelper>(TEXT("Montage Helper"));
 	WeaponSystem = CreateDefaultSubobject<UWeaponSystem>(TEXT("Weapon System"));
+	ActorProfileSystem = CreateDefaultSubobject<UActorProfileSystem>(TEXT("Actor Profile System"));
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 

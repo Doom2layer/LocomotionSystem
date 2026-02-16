@@ -3,6 +3,7 @@
 
 #include "MainContent/LocomotionSystem/Weapons/WeaponBase.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "MainContent/LocomotionSystem/Camera/HZ_CameraManager.h"
 #include "MainContent/LocomotionSystem/Character/LocomotionSystem_PlayerBase.h"
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
@@ -258,6 +259,11 @@ void AWeaponBase::Fire(bool bIsPressed)
 
 void AWeaponBase::MeleeAttack(FHitResult HitResult)
 {
+	ApplyDamage(
+		WeaponConfig.DamageConfig.Damage,
+		HitResult,
+		WeaponConfig.DamageConfig.DamageType
+	);
 }
 
 void AWeaponBase::Melee(bool bIsPressed)
@@ -367,4 +373,17 @@ void AWeaponBase::Aim(bool bIsPressed)
 bool AWeaponBase::CanAim()
 {
 	return !bIsSprinting && WeaponConfig.CameraConfig.EnableAiming;
+}
+
+void AWeaponBase::ApplyDamage(float Damage, const FHitResult& HitResult, TSubclassOf<UDamageType> DamageTypeClass)
+{
+	UGameplayStatics::ApplyPointDamage(
+		HitResult.GetActor(),
+		Damage,
+		GetActorLocation(),
+		HitResult,
+		OwnerCharacter ? OwnerCharacter->GetController() : nullptr,
+		this,	
+		DamageTypeClass
+	);
 }

@@ -57,7 +57,20 @@ void AFirearmBase::Fire(bool bIsPressed)
 
 void AFirearmBase::FireWeapon(TArray<FHitResult> HitResults)
 {
+	FireDamage(HitResults);
 	FireEffects(FilterHitResults(HitResults));
+}
+
+void AFirearmBase::FireDamage(const TArray<FHitResult>& HitResults)
+{
+	for (FHitResult Result : HitResults)
+	{
+		ApplyDamage(
+			WeaponConfig.DamageConfig.Damage,
+			Result,
+			WeaponConfig.DamageConfig.DamageType
+		);
+	}
 }
 
 void AFirearmBase::FireEffects(const TArray<FVector>& ImpactPositions)

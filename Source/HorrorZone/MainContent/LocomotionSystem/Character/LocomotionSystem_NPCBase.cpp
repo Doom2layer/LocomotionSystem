@@ -7,6 +7,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
 
+ALocomotionSystem_NPCBase::ALocomotionSystem_NPCBase()
+{
+	Tags.Add("NPC");
+}
+
 void ALocomotionSystem_NPCBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -23,7 +28,10 @@ void ALocomotionSystem_NPCBase::Tick(float DeltaTime)
 void ALocomotionSystem_NPCBase::BeginPlay()
 {
 	Super::BeginPlay();
-	WeaponSystem->UseWeapon(4);
+	if (WeaponSystem)
+	{
+		WeaponSystem->UseWeapon(4);
+	}
 	AAIController* AIController = Cast<AAIController>(GetController());
 	if (AIController)
 	{

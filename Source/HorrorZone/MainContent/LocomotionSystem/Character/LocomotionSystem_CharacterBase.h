@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "LocomotionSystem_CharacterBase.generated.h"
 
+class UActorProfileSystem;
 class UWeaponSystem;
 class UMontageHelper;
 class ULocomotionSystem;
@@ -59,4 +60,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UWeaponSystem* WeaponSystem;	
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+	UActorProfileSystem* ActorProfileSystem;
 };

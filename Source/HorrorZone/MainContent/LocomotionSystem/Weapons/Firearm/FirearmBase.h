@@ -54,6 +54,8 @@ protected:
 
 	void FireEffects(const TArray<FVector>& ImpactPositions);
 
+	void FireDamage(const TArray<FHitResult>& HitResults);
+	
 	void ReloadAmmo();
 	
 	bool CanFire();
