@@ -6,7 +6,6 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "MainContent/LocomotionSystem/Components/Helper/MontageHelper.h"
 #include "MainContent/LocomotionSystem/Data/Locomotion_Enums.h"
 
@@ -34,6 +33,16 @@ void ADeathEffect::PlayAnimMontage(const ECardinalDirection Direction)
 		MontageToPlay = DeathRightReactionMontages.Num() > 0 ? DeathRightReactionMontages[FMath::RandRange(0, DeathRightReactionMontages.Num() - 1)] : nullptr;
 		break;
 	}
+	
+	// in case the montage didn't blendout correctly or was invalid, ensure the ragdoll is applied after a short delay to prevent the character from getting stuck in an idle pose
+	GetWorld()->GetTimerManager().SetTimer(
+		RagdollTimerHandle,
+		this,
+		&ADeathEffect::Ragdoll,
+		MontageToPlay ? MontageToPlay->GetPlayLength() : 0.1f,
+		false
+	);
+	
 	// Play the montage on the owner's MontageHelper
 	MontageHelper->PlayMontage(
 		MontageToPlay,
@@ -59,6 +68,8 @@ void ADeathEffect::Ragdoll()
 	Character->GetMesh()->AddImpulse(ImpulseVector, RagdollImpulseBone, true);
 	Character->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	Character->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	
+	RagdollTimerHandle.Invalidate(); 
 }
 
 void ADeathEffect::OnMontageBlendOut(FName ID)

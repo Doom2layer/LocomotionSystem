@@ -10,6 +10,7 @@
 #include "MainContent/LocomotionSystem/Components/SubSystems/UserInterfaceSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
 #include "MainContent/LocomotionSystem/Components/SubSystems/ActorProfileSystem.h"
+#include "MainContent/LocomotionSystem/Components/SubSystems/NPCSystem.h"
 
 UUserInterfaceSystem* UUtilitiesFunctionLibrary::GetUserInterfaceSystem(UObject* WorldContextObject)
 {
@@ -101,6 +102,15 @@ UActorProfileSystem* UUtilitiesFunctionLibrary::GetActorProfileSystem(AActor* Ow
 	if (Owner)
 	{
 		if (UActorProfileSystem* System = Owner->GetComponentByClass<UActorProfileSystem>()) return System;
+	}
+	return nullptr;
+}
+
+UNPCSystem* UUtilitiesFunctionLibrary::GetNPCSystem(AActor* Owner)
+{
+	if (Owner)
+	{
+		if (UNPCSystem* System = Owner->GetComponentByClass<UNPCSystem>()) return System;
 	}
 	return nullptr;
 }

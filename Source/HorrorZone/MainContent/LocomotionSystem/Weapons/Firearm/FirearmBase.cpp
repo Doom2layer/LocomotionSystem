@@ -305,7 +305,7 @@ void AFirearmBase::DecrementAmmo()
 
 bool AFirearmBase::CanFire()
 {
-	return !IsReloading;
+	return !IsReloading && !ActorProfileSystem->GetIsDead();
 }
 
 void AFirearmBase::Reload()

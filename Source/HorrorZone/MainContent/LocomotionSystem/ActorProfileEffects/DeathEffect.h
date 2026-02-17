@@ -27,6 +27,8 @@ protected:
 
 	virtual void OnMontageBlendOut(FName ID) override;
 	
+	FTimerHandle RagdollTimerHandle;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=DeathEffect)
 	float RagdollImpulseStrength;
 	

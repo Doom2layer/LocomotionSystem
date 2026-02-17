@@ -9,6 +9,7 @@
 #include "MainContent/LocomotionSystem/Utilities/UtilitiesFunctionLibrary.h"
 #include "MainContent/LocomotionSystem/Widget/ActorProfileContainer.h"
 #include "MainContent/LocomotionSystem/Widget/Health.h"
+#include "MainContent/LocomotionSystem/Widget/Team.h"
 
 // Sets default values for this component's properties
 UActorProfileSystem::UActorProfileSystem()
@@ -52,7 +53,8 @@ void UActorProfileSystem::BeginPlay()
     }
 	
 	InitializeEffects();
-
+	InitializeTeam();
+	
     // Only players trace for NPCs
     if (UUtilitiesFunctionLibrary::IsPlayer(Owner.Get()))
     {
@@ -65,6 +67,12 @@ void UActorProfileSystem::BeginPlay()
         );
     }
 	
+	if (bShowTeam)
+	{
+		UTeam* LTeamWidget = CreateWidget<UTeam>(GetWorld(), TeamWidgetClass);
+		LTeamWidget->SetTeamConfig(TeamConfig.TeamColor, TeamConfig.DisplayName);
+		ActorProfileContainerWidget->AddElement(LTeamWidget);
+	}
 }
 
 void UActorProfileSystem::PerformNPCTrace()
@@ -176,6 +184,72 @@ void UActorProfileSystem::InitializeActorProfileContainer()
 	L_WidgetComponent->RegisterComponent();
 }
 
+void UActorProfileSystem::InitializeTeam()
+{
+	if (!IsValid(TeamConfigDataTable))
+	{
+		return;
+	}
+
+	TeamConfig = GetTeamConfigsByTeamID(TeamID);
+	if (bApplyTeamColor)
+	{
+		UpdateColorMeshColor(TeamConfig.TeamColor);
+	}
+}
+
+FS_TeamConfig UActorProfileSystem::GetTeamConfigsByTeamID(ETeam InTeamID)
+{
+	// Check if data table is valid
+	if (!IsValid(TeamConfigDataTable))
+	{
+		return FS_TeamConfig();
+	}
+
+	UDataTable* DataTable = TeamConfigDataTable.Get();
+	if (!DataTable)
+	{
+		return FS_TeamConfig();
+	}
+
+	for (FName RowName : DataTable->GetRowNames())
+	{
+		FS_TeamConfig* FoundConfig = DataTable->FindRow<FS_TeamConfig>(RowName, FString());
+		if (FoundConfig && FoundConfig->TeamID == InTeamID)
+		{
+			return *FoundConfig;
+		}
+	}
+
+	return FS_TeamConfig();
+}
+
+
+void UActorProfileSystem::UpdateColorMeshColor(FLinearColor NewColor)
+{
+	if (Character)
+	{
+		if (Character->GetMesh())
+		{
+			USkeletalMeshComponent* Mesh = Character->GetMesh();
+			int32 NumMaterials = Mesh->GetNumMaterials();
+	 
+			for (int32 Index = 0; Index < NumMaterials; ++Index)
+			{
+				UMaterialInterface* Material = Mesh->GetMaterial(Index);
+				if (Material)
+				{
+					UMaterialInstanceDynamic* DynamicMaterial = Mesh->CreateAndSetMaterialInstanceDynamicFromMaterial(Index, Material);
+					if (DynamicMaterial)
+					{
+						DynamicMaterial->SetVectorParameterValue(TEXT("Tint"), NewColor);
+					}
+				}
+			}
+		}
+	}
+}
+
 void UActorProfileSystem::SetActorProfileContainerVisibility(ESlateVisibility Visibility) const
 {
 	if (ActorProfileContainerWidget)
@@ -252,4 +326,18 @@ void UActorProfileSystem::OnTakeDamage(AActor* DamagedActor, float Damage, ACont
 		SenseRule = ESenseRule::AlwaysInactive;
 		bIsDead = true;
 	}
+}
+
+ETeamAffiliation UActorProfileSystem::GetTeamAffiliation(AActor* TargetActor)
+{
+	ETeam LActorTeamID = UUtilitiesFunctionLibrary::GetActorProfileSystem(TargetActor)->GetTeamID();
+	if (TeamConfig.Enemies.Contains(LActorTeamID))
+	{
+		return ETeamAffiliation::Enemy;
+	}
+	if (TeamConfig.Allies.Contains(LActorTeamID))
+	{
+		return ETeamAffiliation::Friendly;
+	}
+	return ETeamAffiliation::Neutral;
 }

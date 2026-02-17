@@ -5,10 +5,13 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "MainContent/LocomotionSystem/ActorProfileEffects/HitReaction.h"
+#include "MainContent/LocomotionSystem/Data/ActorProfiles_Structs.h"
 #include "MainContent/LocomotionSystem/Data/SenseRules_Enum.h"
 #include "ActorProfileSystem.generated.h"
 
 
+class UTeam;
+enum class ETeam : uint8;
 class AActorProfileEffectsBase;
 enum class ESenseRule : uint8;
 class UActorProfileContainer;
@@ -30,6 +33,8 @@ public:
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	ETeamAffiliation GetTeamAffiliation(AActor* TargetActor);
+
 	FORCEINLINE FOnHealthUpdated& GetOnHealthUpdatedDelegate(){return OnHealthUpdated;}
 	FORCEINLINE FOnTakeDamageDelegate& GetOnTakeDamageDelegate(){return OnTakeDamageDelegate;}
 	FORCEINLINE FOnDeath& GetOnDeathDelegate(){return OnDeathDelegate;}
@@ -38,6 +43,7 @@ public:
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
 	FORCEINLINE TArray<FName> GetTags() const { return Tags; }
 	FORCEINLINE ESenseRule GetSenseRule() const { return SenseRule; }
+	FORCEINLINE ETeam GetTeamID() const { return TeamID; }
 	
 protected:
 	// Called when the game starts
@@ -47,13 +53,19 @@ protected:
 
 	void InitializeActorProfileContainer();
 	
+	void InitializeEffects();
+	
+	void InitializeTeam();
+	
+	FS_TeamConfig GetTeamConfigsByTeamID(ETeam InTeamID);
+	
+	void UpdateColorMeshColor(FLinearColor NewColor);
+	
 	void SetActorProfileContainerVisibility(ESlateVisibility Visibility) const;
 	
 	void UpdateHealth(float Value);
 	
 	void PerformNPCTrace();
-	
-	void InitializeEffects();
 	
 	TArray<AActor*> TraceForNPCs();
 	
@@ -114,4 +126,22 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Actor Profile")
 	bool bIsDead;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Actor Profile")
+	ETeam TeamID = ETeam::Blue;	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Actor Profile")
+	TObjectPtr<UDataTable> TeamConfigDataTable;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Actor Profile")
+	bool bApplyTeamColor = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Actor Profile")
+	bool bShowTeam = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Actor Profile")
+	TSubclassOf<UTeam> TeamWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Actor Profile")
+	FS_TeamConfig TeamConfig;
 };

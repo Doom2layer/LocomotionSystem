@@ -8,6 +8,7 @@
 #include "MainContent/LocomotionSystem/Components/SubSystems/ActorProfileSystem.h"
 #include "UtilitiesFunctionLibrary.generated.h"
 
+class UNPCSystem;
 class UWeaponSystem;
 class ALocomotionSystem_CharacterBase;
 class UMontageHelper;
@@ -45,7 +46,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
 	static UActorProfileSystem* GetActorProfileSystem(AActor* Owner);
 	
-	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Utilities")
+	static UNPCSystem* GetNPCSystem(AActor* Owner);
 	
 	template<typename T>
 	static bool IsPlayer(T* Actor)
@@ -60,19 +62,19 @@ public:
 		return false;
 	}
 	
-		template<typename T>
-		static bool IsNPC(T* Actor, FName Tag = "NPC")
+	template<typename T>
+	static bool IsNPC(T* Actor, FName Tag = "NPC")
+	{
+		if (Actor)
 		{
-			if (Actor)
+			if (ALocomotionSystem_CharacterBase* Character = Cast<ALocomotionSystem_CharacterBase>(Actor))
 			{
-				if (ALocomotionSystem_CharacterBase* Character = Cast<ALocomotionSystem_CharacterBase>(Actor))
+				if (UActorProfileSystem* System = UUtilitiesFunctionLibrary::GetActorProfileSystem(Actor))
 				{
-					if (UActorProfileSystem* System = UUtilitiesFunctionLibrary::GetActorProfileSystem(Actor))
-					{
-						return System->GetTags().Contains(Tag) && !Character->IsPlayerControlled();
-					}
+					return System->GetTags().Contains(Tag) && !Character->IsPlayerControlled();
 				}
 			}
-			return false;
 		}
+		return false;
+	}
 };

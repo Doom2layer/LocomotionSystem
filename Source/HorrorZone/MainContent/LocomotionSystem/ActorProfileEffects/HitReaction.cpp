@@ -48,7 +48,7 @@ void AHitReaction::PlayAnimMontage(const ECardinalDirection Direction)
 		1.0f,
 		0.0f,
 		NAME_None,
-		true,
+		false,
 		"HitReaction"
 	);
 }

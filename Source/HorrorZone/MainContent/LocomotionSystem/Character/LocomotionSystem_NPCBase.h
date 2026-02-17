@@ -6,6 +6,7 @@
 #include "MainContent/LocomotionSystem/Character/LocomotionSystem_CharacterBase.h"
 #include "LocomotionSystem_NPCBase.generated.h"
 
+class UNPCSystem;
 /**
  * 
  */
@@ -21,4 +22,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	TObjectPtr<UNPCSystem> NPCSystem;
 };

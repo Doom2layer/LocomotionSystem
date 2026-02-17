@@ -15,6 +15,7 @@ public class HorrorZone : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"AIModule",
+			"NavigationSystem",
 			"StateTreeModule",
 			"UMG",
 			"Slate",

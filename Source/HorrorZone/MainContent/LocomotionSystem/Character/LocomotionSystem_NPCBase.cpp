@@ -2,39 +2,24 @@
 
 
 #include "MainContent/LocomotionSystem/Character/LocomotionSystem_NPCBase.h"
-
-#include "AIController.h"
-#include "Kismet/GameplayStatics.h"
-#include "MainContent/LocomotionSystem/Components/SubSystems/WeaponSystem.h"
+#include "MainContent/LocomotionSystem/AI/Controller/LSAIController.h"
+#include "MainContent/LocomotionSystem/Components/SubSystems/NPCSystem.h"
 
 ALocomotionSystem_NPCBase::ALocomotionSystem_NPCBase()
 {
 	Tags.Add("NPC");
+	AIControllerClass = ALSAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	NPCSystem = CreateDefaultSubobject<UNPCSystem>(TEXT("NPCSystem"));
 }
 
 void ALocomotionSystem_NPCBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
-	{
-		if (WeaponSystem)
-		{
-			ToggleFire(true);
-		}
-	}, 0.2f, false);
 }
 
 void ALocomotionSystem_NPCBase::BeginPlay()
 {
 	Super::BeginPlay();
-	if (WeaponSystem)
-	{
-		WeaponSystem->UseWeapon(4);
-	}
-	AAIController* AIController = Cast<AAIController>(GetController());
-	if (AIController)
-	{
-		AIController->SetFocus(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	}
 }
+

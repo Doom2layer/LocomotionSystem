@@ -10,6 +10,7 @@
 #include "MainContent/LocomotionSystem/Interfaces/WeaponInterface.h"
 #include "WeaponBase.generated.h"
 
+class UActorProfileSystem;
 enum class ERotationMode : uint8;
 class ULocomotionSystem;
 class UUserInterfaceSystem;
@@ -95,6 +96,11 @@ protected:
 	UFUNCTION()
 	virtual void OnMontageNotifyBeginAtOwner(FName AnimNotify, FName NotifyName);
 	
+	UFUNCTION()
+	virtual void OnOwnerDied(AActor* DamagedActor, float Damage, AController* InstigatedBy,
+	FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
+	const UDamageType* DamageType, AActor* DamageCauser);
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Setup)
 	USceneComponent* RootSceneComponent;	
 	
@@ -116,6 +122,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
 	UMontageHelper* MontageHelper;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
+	TObjectPtr<UActorProfileSystem> ActorProfileSystem;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Setup)
 	UUserInterfaceSystem* UserInterfaceSystem;	
 
