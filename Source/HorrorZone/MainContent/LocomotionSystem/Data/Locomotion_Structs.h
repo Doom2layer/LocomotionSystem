@@ -117,10 +117,10 @@ struct HORRORZONE_API FS_AnimOverride_Sequence: public FTableRowBase
 	TObjectPtr<UAnimSequence> AnimationSequence = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
-	float StartPosition;
+	float StartPosition = 0.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
-	float OverrideWeight;
+	float OverrideWeight = 1.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animation")
 	float InterSpeed = 10.0f;

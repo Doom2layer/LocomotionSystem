@@ -34,6 +34,14 @@ void UUserInterfaceSystem::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Only initialize UI if there's a valid player pawn
+	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!PlayerPawn)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UserInterfaceSystem: No player pawn found, skipping UI initialization"));
+		return;
+	}
+	
 	ToggleWeaponWidget(true);
 	ToggleHUD(true);
 	ToggleCrosshair(true);
@@ -93,8 +101,27 @@ void UUserInterfaceSystem::CreateHUDWidget()
 	if (HUDWidget)
 	{
 		HUDWidget->AddToViewport();
-		HUDWidget->SetOwner(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-		HUDWidget->OnHealthChanged(UUtilitiesFunctionLibrary::GetActorProfileSystem(UGameplayStatics::GetPlayerPawn(GetWorld(), 0))->GetMaxHealth());
+		
+		// Safely get player pawn and ActorProfileSystem
+		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+		if (PlayerPawn)
+		{
+			HUDWidget->SetOwner(PlayerPawn);
+			
+			UActorProfileSystem* ProfileSystem = UUtilitiesFunctionLibrary::GetActorProfileSystem(PlayerPawn);
+			if (ProfileSystem)
+			{
+				HUDWidget->OnHealthChanged(ProfileSystem->GetMaxHealth());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("UserInterfaceSystem: ActorProfileSystem not found on player pawn"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("UserInterfaceSystem: Player pawn is null, cannot initialize HUD"));
+		}
 	}
 }
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CameraSettings_Struct.h"
+#include "Weapons_Enums.h"
 #include "Weapon_Structs.generated.h"
 
 enum class ECameraState : uint8;
@@ -113,7 +114,7 @@ struct FS_WeaponCrosshairConfig : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Crosshair")
-	bool bIsEnabled;
+	bool bIsEnabled = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Crosshair")
 	FLinearColor OutterBorderColor = FLinearColor::Black;
@@ -188,7 +189,7 @@ struct HORRORZONE_API FS_WeaponConfig : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Configs")
-	EWeapon ID;	
+	EWeapon ID = EWeapon::Unarmed;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Configs")
 	FName Name = NAME_None;

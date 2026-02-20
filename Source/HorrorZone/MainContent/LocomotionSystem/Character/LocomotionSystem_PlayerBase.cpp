@@ -114,8 +114,6 @@ void ALocomotionSystem_PlayerBase::SetupPlayerInputComponent(UInputComponent* Pl
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &ALocomotionSystem_PlayerBase::DAim);
 		
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ALocomotionSystem_PlayerBase::UAim);
-		
-		
 	}
 	else
 	{

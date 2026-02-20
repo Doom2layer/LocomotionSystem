@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "HorrorZoneCharacter.generated.h"
 
+class UInputMappingContext;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
@@ -32,6 +33,8 @@ class AHorrorZoneCharacter : public ACharacter
 	UCameraComponent* FollowCamera;
 
 public:
+	virtual void BeginPlay() override;
+	
 	/** Constructor */
 	AHorrorZoneCharacter();
 	
@@ -67,6 +70,12 @@ public:
 	FORCEINLINE void SetSpotLightLocation(FVector NewSpotLightLocation) { SpotLightLocation = NewSpotLightLocation; }
 
 protected:
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	TSoftObjectPtr<UInputMappingContext> InputMapping;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	TSoftObjectPtr<UInputMappingContext> MouseMapping;
 	
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, Category="Input")

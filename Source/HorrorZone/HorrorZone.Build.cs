@@ -25,6 +25,7 @@ public class HorrorZone : ModuleRules
 			"GameplayStateTreeModule",
 			"AnimationLocomotionLibraryRuntime",
 			"Niagara",
+			"ControlRig"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });

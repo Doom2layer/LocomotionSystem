@@ -11,14 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "HorrorZone.h"
-#include "Components/SpotLightComponent.h"
-#include "Engine/SpotLight.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "MainContent/AnimInst/AnimInst_TP.h"
-#include "Runtime/Engine/Internal/Kismet/BlueprintTypeConversions.h"
-
-class UAnimInst_TP;
+#include "InputMappingContext.h"
 
 AHorrorZoneCharacter::AHorrorZoneCharacter()
 {
@@ -61,15 +54,30 @@ AHorrorZoneCharacter::AHorrorZoneCharacter()
 void AHorrorZoneCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	TArray<AActor*> SpotLights;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpotLight::StaticClass(), SpotLights);
-	if (SpotLights.Num() > 0)
-	{
-		SpotLightLocation = SpotLights[0]->GetActorLocation();
-	}
 }
 
+void AHorrorZoneCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	// Add Input Mapping Context
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			if (InputMapping.IsNull() == false)
+			{
+				Subsystem->AddMappingContext(InputMapping.LoadSynchronous(), 0);
+				Subsystem->AddMappingContext(MouseMapping.LoadSynchronous(), 1);
+				
+			}
+			else
+			{
+				UE_LOG(LogHorrorZone, Warning, TEXT("InputMapping is not set for %s"), *GetName());
+			}
+		}
+	}
+}
 
 void AHorrorZoneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
