@@ -6,9 +6,6 @@
 
 A comprehensive Unreal Engine 5 C++ technical showcase featuring an advanced locomotion system, AI combat mechanics, weapon systems, and custom Control Rig implementations. Built with production-quality architecture and clean code practices.
 
-![Project Banner](Documentation/banner.png)
-*Advanced locomotion with procedural animation and team-based AI combat*
-
 ---
 
 ## 🎯 Project Overview
@@ -16,7 +13,7 @@ A comprehensive Unreal Engine 5 C++ technical showcase featuring an advanced loc
 **HorrorZone** demonstrates professional-grade game development with Unreal Engine 5, showcasing:
 
 - 🚶 **Advanced Locomotion System** - Data-driven movement with distance matching
-- 🤖 **AI Combat System** - Team-based behavior with custom Behavior Tree tasks  
+- 🤖 **AI Combat System** - Team-based behavior with custom Behavior Tree tasks
 - 🔫 **Weapon System** - Firearms, melee, and combo mechanics
 - 🦴 **Control Rig C++** - Custom IK units for procedural animation
 - 🎬 **Animation System** - Thread-safe, layered blending with overrides
@@ -26,23 +23,8 @@ A comprehensive Unreal Engine 5 C++ technical showcase featuring an advanced loc
 
 ---
 
-## 📚 Documentation
-
-Comprehensive documentation is provided in three detailed guides:
-
-| Document | Description | Target Audience |
-|----------|-------------|-----------------|
-| **[PROJECT_DOCUMENTATION.md](PROJECT_DOCUMENTATION.md)** | Complete system overview, architecture, and features | All readers |
-| **[TECHNICAL_IMPLEMENTATION.md](TECHNICAL_IMPLEMENTATION.md)** | Implementation details, code examples, and deep dives | Developers |
-| **[PORTFOLIO_SHOWCASE.md](PORTFOLIO_SHOWCASE.md)** | Portfolio presentation and interview preparation | Job seekers |
-
----
-
-## 🎥 Demo Video
-
-[![Demo Video](Documentation/video_thumbnail.png)](https://youtu.be/YOUR_VIDEO_ID)
-
 **Features Demonstrated:**
+
 - Smooth locomotion transitions (Walk, Jog, Sprint, Crouch)
 - Weapon switching and combat mechanics
 - AI team-based combat (Red vs Green vs Blue)
@@ -54,6 +36,7 @@ Comprehensive documentation is provided in three detailed guides:
 ## ✨ Key Features
 
 ### Locomotion System
+
 - **Data-Driven Configuration** - All animation sets in DataTables
 - **Distance Matching** - Realistic foot placement based on actual distance
 - **Turn-In-Place** - Smooth rotation animations when stationary
@@ -62,6 +45,7 @@ Comprehensive documentation is provided in three detailed guides:
 - **Animation Overrides** - Per-body-part blending system
 
 ### Weapon System
+
 - **Multiple Weapon Types** - Firearms (rifle, pistol, shotgun) and melee
 - **Slot-Based Inventory** - Easy weapon switching
 - **Ammo Management** - Magazine and spare ammo tracking
@@ -70,6 +54,7 @@ Comprehensive documentation is provided in three detailed guides:
 - **Dynamic Attachment** - Proper weapon-to-character attachment
 
 ### AI System
+
 - **Behavior Tree Implementation** - Custom tasks and services
 - **Team Affiliation** - Configurable enemy/ally relationships
 - **Combat Behavior** - Fire duration control and target prioritization
@@ -78,6 +63,7 @@ Comprehensive documentation is provided in three detailed guides:
 - **Smart Targeting** - Team-aware enemy selection
 
 ### Control Rig System
+
 - **Custom C++ Units** - FRigUnit_SetFinalLegIK for procedural IK
 - **Automatic Bone Chain Resolution** - Thigh → Calf → Foot hierarchy
 - **Scale-Aware Calculations** - Proper handling of non-uniform scaling
@@ -85,6 +71,7 @@ Comprehensive documentation is provided in three detailed guides:
 - **Production Quality** - Implementation mirrors Epic's engine code
 
 ### UI System
+
 - **World-Space Widgets** - Health bars and team indicators
 - **Sense Rules** - Optimized visibility based on distance/angle
 - **Dynamic HUD** - Weapon info, ammo, crosshair
@@ -133,8 +120,8 @@ ULocomotionSystem* LocomotionSystem;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponSlotChanged, int32, NewSlot);
 
 // Interface implementation
-class AWeaponBase : public AActor, 
-                    public IWeaponInterface, 
+class AWeaponBase : public AActor,
+                    public IWeaponInterface,
                     public IInventoryItemInterface
 {
     // Multiple interface support
@@ -153,10 +140,10 @@ USTRUCT(meta=(DisplayName="Set Final Foot IK"))
 struct FRigUnit_SetFinalLegIK : public FRigUnitMutable
 {
     GENERATED_BODY()
-    
+
     UPROPERTY(meta = (Input))
     TArray<FRigElementKey> FootItems;
-    
+
     RIGVM_METHOD()
     virtual void Execute() override;
 };
@@ -219,25 +206,17 @@ Source/HorrorZone/MainContent/
 
 ### Building the Project
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/HorrorZone.git
-```
+1. Clone the repository
 
-2. Navigate to project directory:
-```bash
-cd HorrorZone
-```
+2. Right-click `HorrorZone.uproject` → Generate Visual Studio project files
 
-3. Right-click `HorrorZone.uproject` → Generate Visual Studio project files
+3. Open `HorrorZone.sln` in Visual Studio
 
-4. Open `HorrorZone.sln` in Visual Studio
+4. Set build configuration to `Development Editor`
 
-5. Set build configuration to `Development Editor`
+5. Build the solution (Ctrl + Shift + B)
 
-6. Build the solution (Ctrl + Shift + B)
-
-7. Launch from Visual Studio or open `HorrorZone.uproject`
+6. Launch from Visual Studio or open `HorrorZone.uproject`
 
 ### Quick Start Guide
 
@@ -264,17 +243,17 @@ cd HorrorZone
 
 ## 📊 Project Statistics
 
-| Metric | Value |
-|--------|-------|
-| **Total C++ Files** | 100+ (headers + source) |
-| **Lines of Code** | ~10,000+ |
-| **Custom Components** | 8 major subsystems |
-| **Data Structures** | 30+ custom structs |
-| **Enums** | 15+ custom enums |
-| **BT Tasks** | 4 custom tasks |
-| **Control Rig Units** | 3 custom units |
-| **Animation Notifies** | 3 custom notifies |
-| **Widget Classes** | 6 UI widgets |
+| Metric                 | Value                   |
+| ---------------------- | ----------------------- |
+| **Total C++ Files**    | 100+ (headers + source) |
+| **Lines of Code**      | ~10,000+                |
+| **Custom Components**  | 8 major subsystems      |
+| **Data Structures**    | 30+ custom structs      |
+| **Enums**              | 15+ custom enums        |
+| **BT Tasks**           | 4 custom tasks          |
+| **Control Rig Units**  | 3 custom units          |
+| **Animation Notifies** | 3 custom notifies       |
+| **Widget Classes**     | 6 UI widgets            |
 
 ---
 
@@ -294,13 +273,16 @@ This project serves as an educational resource for:
 ## 🤝 Use Cases
 
 ### As Portfolio Piece
+
 - Demonstrates production-quality code
 - Shows architectural thinking
 - Proves Unreal Engine mastery
 - Exhibits clean code practices
 
 ### As Game Foundation
+
 Can be extended for:
+
 - Third-person shooters
 - Action RPGs
 - Stealth games
@@ -308,6 +290,7 @@ Can be extended for:
 - Combat-focused titles
 
 ### As Learning Material
+
 - Well-structured for study
 - Demonstrates best practices
 - Includes advanced concepts
@@ -318,6 +301,7 @@ Can be extended for:
 ## 🔧 System Requirements
 
 ### Development
+
 - **OS:** Windows 10/11 64-bit
 - **CPU:** Quad-core Intel/AMD, 2.5 GHz+
 - **RAM:** 16 GB minimum, 32 GB recommended
@@ -325,6 +309,7 @@ Can be extended for:
 - **Storage:** 100+ GB free space (SSD recommended)
 
 ### Runtime
+
 - **OS:** Windows 10/11 64-bit
 - **CPU:** Quad-core Intel/AMD
 - **RAM:** 8 GB minimum
@@ -363,7 +348,7 @@ void UWeaponSystem::Initialize()
         {
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = OwningActor;
-            SpawnParams.SpawnCollisionHandlingOverride = 
+            SpawnParams.SpawnCollisionHandlingOverride =
                 ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
             AWeaponBase* Weapon = GetWorld()->SpawnActor<AWeaponBase>(
@@ -389,11 +374,13 @@ void UWeaponSystem::Initialize()
 ## 🐛 Known Issues & Limitations
 
 ### Current Limitations
+
 - Single-player only (multiplayer not implemented)
 - AI limited to basic combat behavior
 - Limited weapon variety (foundation in place)
 
 ### Future Enhancements
+
 - [ ] Multiplayer support with replication
 - [ ] Advanced AI behaviors (flanking, cover)
 - [ ] More weapon types and attachments
@@ -417,47 +404,7 @@ See [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📞 Contact
-
-- **Portfolio:** [Your Website]
-- **LinkedIn:** [Your Profile]
-- **Email:** [your.email@example.com]
-- **GitHub:** [Your Profile]
-
----
-
 ## 🌟 Showcase
-
-### Video Demonstrations
-
-| Feature | Demo Link |
-|---------|-----------|
-| Locomotion System | [Watch Demo](#) |
-| AI Combat | [Watch Demo](#) |
-| Weapon System | [Watch Demo](#) |
-| Control Rig IK | [Watch Demo](#) |
-
-### Screenshots
-
-![Player Blueprint](Documentation/blueprints/player_blueprint.png)
-*Player character component architecture and class defaults*
-
-![Control Rig Bipedal](Documentation/controlrig/controlrig_bipedal.png)
-*Control Rig graph for bipedal IK system*
-
-![Control Rig Scorpion](Documentation/controlrig/controlrig_scorpion.png)
-*Control Rig graph for scorpion multi-leg IK*
-
-![DataTable Animations](Documentation/datatables/datatable_animations.png)
-*Data-driven animation configuration*
-
-![DataTable Teams](Documentation/datatables/datatable_teams.png)
-*Team affiliation system setup*
-
-![DataTable Camera](Documentation/datatables/datatable_camera.png)
-*Per-weapon camera settings*
-
----
 
 ## 💡 Key Takeaways
 
@@ -486,8 +433,6 @@ This project demonstrates:
 
 **Built with ❤️ using Unreal Engine 5**
 
-*Last Updated: March 2026*
-
 ---
 
 **⭐ Star this repository if you find it useful!**
@@ -495,4 +440,3 @@ This project demonstrates:
 **📢 Share with others learning Unreal Engine C++!**
 
 **🔔 Watch for updates and new features!**
-
